@@ -68,8 +68,8 @@ class BackupManagerTest {
 
     @Test
     fun jsonRoundTripRestoresEverything() = runTest {
-        workTypeRepository.ensureDefaultWorkTypes()
-        val type = workTypeRepository.getAll().first()
+        val typeId = workTypeRepository.add("Main Job", 1_600L, "JPY").getOrThrow()
+        val type = workTypeRepository.getById(typeId)!!
         workRepository.createManualSession(nine, five, 30, 1_600L, "JPY", type, "backed up")
 
         val output = ByteArrayOutputStream()
@@ -98,6 +98,10 @@ class BackupManagerTest {
         val output = ByteArrayOutputStream()
         backupManager.exportJson(output).getOrThrow()
         val parsed = backupManager.parse(output.toString(Charsets.UTF_8.name())).getOrThrow()
+
+        // Import into an empty database: the first import restores the record,
+        // the second finds it already there.
+        workRepository.deleteEverything().getOrThrow()
 
         val first = backupManager.import(parsed).getOrThrow()
         val second = backupManager.import(parsed).getOrThrow()

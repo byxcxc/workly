@@ -29,6 +29,7 @@ class WorkRepositoryTest {
     private lateinit var database: WorklyDatabase
     private lateinit var repository: WorkRepository
     private lateinit var workTypes: WorkTypeRepository
+    private lateinit var settings: com.workly.app.data.prefs.SettingsRepository
 
     private val nine = Instant.parse("2026-09-16T09:00:00Z")
     private val five = Instant.parse("2026-09-16T17:00:00Z")
@@ -40,9 +41,10 @@ class WorkRepositoryTest {
             .allowMainThreadQueries()
             .build()
         repository = WorkRepository(database.workSessionDao(), database.workTypeDao())
+        settings = com.workly.app.data.prefs.SettingsRepository(context)
         workTypes = WorkTypeRepository(
             workTypeDao = database.workTypeDao(),
-            settingsRepository = com.workly.app.data.prefs.SettingsRepository(context),
+            settingsRepository = settings,
             defaultNames = listOf("Main Job"),
         )
     }
@@ -217,16 +219,19 @@ class WorkRepositoryTest {
     }
 
     @Test
-    fun defaultWorkTypesAreSeededOnlyOnce() = runTest {
+    fun defaultWorkTypesAreSeededOnceAndThenRemembered() = runTest {
+        // The flag lives in DataStore, so it is set explicitly to keep this test
+        // independent of whatever the installed app has already done.
+        settings.setDefaultsSeeded(false)
+
         workTypes.ensureDefaultWorkTypes()
-        val seeded = workTypes.getAll().size
+        assertEquals(1, workTypes.getAll().size)
+
         workTypes.deleteAll().getOrThrow()
-
-        // The seeded flag is remembered, so a user who deletes everything keeps
-        // their empty list.
         workTypes.ensureDefaultWorkTypes()
 
-        assertEquals(1, seeded)
+        // The flag is remembered, so a user who deletes everything keeps an
+        // empty list.
         assertEquals(0, workTypes.getAll().size)
     }
 }

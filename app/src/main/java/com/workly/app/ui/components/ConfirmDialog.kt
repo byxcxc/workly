@@ -5,6 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.workly.app.R
 
@@ -27,7 +29,10 @@ fun ConfirmDialog(
         title = { Text(title) },
         text = { Text(message) },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
+            TextButton(
+                onClick = onConfirm,
+                modifier = Modifier.testTag(CONFIRM_BUTTON_TAG),
+            ) {
                 Text(
                     text = confirmLabel,
                     color = if (destructive) {
@@ -43,3 +48,11 @@ fun ConfirmDialog(
         },
     )
 }
+
+/**
+ * Test tag for the confirm button.
+ *
+ * A screen may show the same word (for example "Delete") as an action of its own,
+ * so tests target the dialog button by tag.
+ */
+const val CONFIRM_BUTTON_TAG = "confirm_dialog_confirm"
