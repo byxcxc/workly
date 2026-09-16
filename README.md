@@ -1,5 +1,7 @@
 # Workly
 
+[![Android CI](https://github.com/byxcxc/workly/actions/workflows/android.yml/badge.svg)](https://github.com/byxcxc/workly/actions/workflows/android.yml)
+
 **Personal work hours and earnings tracker.**
 
 Workly is a quiet, offline Android app for people who are paid by the hour.
