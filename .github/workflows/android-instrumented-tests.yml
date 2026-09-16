@@ -77,3 +77,20 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: ./gradlew connectedDebugAndroidTest --stacktrace
+
+      - name: Show test results
+        if: always()
+        run: |
+          # Printing the JUnit XML keeps the failure reason in the CI log itself.
+          find app/build/outputs/androidTest-results -name "*.xml" -print -exec head -c 6000 {} \; || true
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: workly-instrumented-reports
+          path: |
+            app/build/reports/androidTests/**
+            app/build/outputs/androidTest-results/**
+          if-no-files-found: ignore
+          retention-days: 14
