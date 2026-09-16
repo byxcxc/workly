@@ -186,13 +186,11 @@ class SessionEditorViewModel(
         viewModelScope.launch {
             draft.update { it.copy(isSaving = true) }
             val zone = ZoneId.systemDefault()
+            val draftState = draft.value
             val startInstant = state.startDate.atTime(state.startTime).atZone(zone).toInstant()
-            val endInstant = WorkTime.resolveEndInstant(
-                startDate = state.startDate,
-                startTime = state.startTime,
-                endTime = state.endTime,
-                zone = zone,
-            )
+            // Resolved exactly the way the validator did, so whatever the screen
+            // shows as valid is what actually gets written.
+            val endInstant = resolveEndInstant(draftState, startInstant, zone)
             val rateMinor = Money.parseToMinor(state.rateText, state.currency) ?: 0L
             val breakMinutes = state.breakText.toIntOrNull() ?: 0
             val workType = state.selectedWorkType
