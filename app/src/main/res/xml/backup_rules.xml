@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rules for Android 11 and below (see data_extraction_rules.xml for 12+). -->
+<full-backup-content>
+    <include
+        domain="database"
+        path="." />
+    <include
+        domain="file"
+        path="datastore" />
+    <include
+        domain="sharedpref"
+        path="." />
+</full-backup-content>

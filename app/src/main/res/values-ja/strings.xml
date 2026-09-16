@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 初回起動時に作成される仕事の種類 -->
+    <string-array name="default_work_types">
+        <item>本業</item>
+        <item>アルバイト</item>
+        <item>フリーランス</item>
+        <item>その他</item>
+    </string-array>
+
+    <!-- 下部ナビゲーション -->
+    <string name="tab_home">ホーム</string>
+    <string name="tab_records">記録</string>
+    <string name="tab_statistics">統計</string>
+    <string name="tab_settings">設定</string>
+
+    <!-- 共通の操作 -->
+    <string name="action_back">戻る</string>
+    <string name="action_cancel">キャンセル</string>
+    <string name="action_save">保存</string>
+    <string name="action_delete">削除</string>
+    <string name="action_edit">編集</string>
+    <string name="action_close">閉じる</string>
+    <string name="action_set">設定</string>
+
+    <!-- 挨拶 -->
+    <string name="greeting_morning">おはようございます</string>
+    <string name="greeting_afternoon">こんにちは</string>
+    <string name="greeting_evening">こんばんは</string>
+    <string name="greeting_night">お疲れさまです</string>
+
+    <!-- ホーム -->
+    <string name="home_worked_today">今日の労働時間</string>
+    <string name="home_earned_today">今日の収入</string>
+    <string name="home_working_now">作業中</string>
+    <string name="home_started_at">%1$s に開始</string>
+    <string name="home_live_earnings">現在の収入</string>
+    <string name="home_this_week">今週</string>
+    <plurals name="home_week_detail">
+        <item quantity="other">%1$s · %2$d 件</item>
+    </plurals>
+    <string name="home_recent_records">最近の記録</string>
+    <string name="home_start_work">作業を開始</string>
+    <string name="home_finish_work">作業を終了</string>
+    <string name="home_see_all">すべて表示</string>
+    <string name="home_choose_work_type">仕事の種類</string>
+    <string name="home_none_yet_message">終了した記録がここに表示されます。</string>
+
+    <!-- 初回の空の状態 -->
+    <string name="empty_title">ここから始めましょう。</string>
+    <string name="empty_message">労働時間と収入をかんたんに記録できます。</string>
+    <string name="empty_action">最初の記録を開始</string>
+
+    <!-- 時給の入力 -->
+    <string name="rate_dialog_title">時給を設定</string>
+    <string name="rate_dialog_message">収入を計算するには時給が必要です。設定からいつでも変更できます。</string>
+    <string name="rate_dialog_field">時給</string>
+    <string name="rate_dialog_confirm">設定して開始</string>
+
+    <!-- 記録 -->
+    <string name="records_title">記録</string>
+    <string name="records_view_list">リスト</string>
+    <string name="records_view_calendar">カレンダー</string>
+    <string name="records_add">記録を追加</string>
+    <string name="records_empty_title">まだ記録がありません</string>
+    <string name="records_empty_message">終了した記録がここに表示されます。</string>
+    <string name="records_detail_title">記録の詳細</string>
+    <plurals name="records_session_count">
+        <item quantity="other">%1$d 件の記録</item>
+    </plurals>
+    <string name="records_no_work_on_day">この日の記録はありません。</string>
+    <plurals name="records_work_days">
+        <item quantity="other">稼働日 %1$d 日</item>
+    </plurals>
+
+    <!-- 記録の編集 -->
+    <string name="editor_add_title">記録を追加</string>
+    <string name="editor_edit_title">記録を編集</string>
+    <string name="editor_finish_title">作業を終了</string>
+    <string name="editor_date">日付</string>
+    <string name="editor_start_time">開始時刻</string>
+    <string name="editor_end_time">終了時刻</string>
+    <string name="editor_break_minutes">休憩（分）</string>
+    <string name="editor_hourly_rate">時給</string>
+    <string name="editor_work_type">仕事の種類</string>
+    <string name="editor_note">メモ</string>
+    <string name="editor_note_hint">どんな作業をしましたか？</string>
+    <string name="editor_worked_time">労働時間</string>
+    <string name="editor_income">収入</string>
+    <string name="editor_save_record">記録を保存</string>
+    <string name="editor_finish_and_save">終了して保存</string>
+    <string name="editor_discard">セッションを破棄</string>
+    <string name="editor_discard_title">このセッションを破棄しますか？</string>
+    <string name="editor_discard_message">進行中のセッションは削除され、何も記録されません。</string>
+    <string name="editor_ends_next_day">翌日に終了</string>
+    <string name="editor_set_now">現在時刻にする</string>
+    <string name="editor_no_work_type">種類なし</string>
+
+    <!-- 統計 -->
+    <string name="stats_title">統計</string>
+    <string name="stats_range_week">今週</string>
+    <string name="stats_range_month">今月</string>
+    <string name="stats_range_year">今年</string>
+    <string name="stats_range_custom">期間指定</string>
+    <string name="stats_total_time">総労働時間</string>
+    <string name="stats_total_income">総収入</string>
+    <string name="stats_work_days">稼働日数</string>
+    <string name="stats_avg_daily_time">稼働日あたりの平均</string>
+    <string name="stats_avg_daily_income">稼働日あたりの平均収入</string>
+    <string name="stats_avg_hourly_rate">平均時給</string>
+    <string name="stats_income_trend">収入の推移</string>
+    <string name="stats_hours_trend">労働時間の推移</string>
+    <string name="stats_empty_title">まだデータがありません</string>
+    <string name="stats_empty_message">作業を終了すると、ここに数値が表示されます。</string>
+    <string name="stats_range_label">%1$s 〜 %2$s</string>
+    <plurals name="stats_session_count">
+        <item quantity="other">この期間の記録は %1$d 件</item>
+    </plurals>
+    <string name="chart_no_data">この期間のデータはありません</string>
+
+    <!-- 設定 -->
+    <string name="settings_title">設定</string>
+    <string name="settings_section_general">一般</string>
+    <string name="settings_section_appearance">外観</string>
+    <string name="settings_section_data">データ</string>
+    <string name="settings_section_about">このアプリについて</string>
+    <string name="settings_default_rate">既定の時給</string>
+    <string name="settings_default_rate_hint">仕事の種類に時給が設定されていない場合に使われます。</string>
+    <string name="settings_currency">通貨</string>
+    <string name="settings_work_types">仕事の種類</string>
+    <plurals name="settings_work_types_summary">
+        <item quantity="other">%1$d 件</item>
+    </plurals>
+    <string name="settings_theme">テーマ</string>
+    <string name="settings_theme_system">システム</string>
+    <string name="settings_theme_light">ライト</string>
+    <string name="settings_theme_dark">ダーク</string>
+    <string name="settings_first_day">週の開始曜日</string>
+    <string name="settings_export_csv">CSV でエクスポート</string>
+    <string name="settings_export_csv_hint">表計算ソフトで開ける形式ですべての記録を書き出します。</string>
+    <string name="settings_export_json">JSON でエクスポート</string>
+    <string name="settings_export_json_hint">再インポートできる完全なバックアップです。</string>
+    <string name="settings_import_json">JSON からインポート</string>
+    <string name="settings_import_json_hint">バックアップを復元します。重複する記録はスキップされます。</string>
+    <string name="settings_delete_all">すべてのデータを削除</string>
+    <string name="settings_delete_all_hint">この端末のすべての記録と仕事の種類を削除します。</string>
+    <string name="settings_about">Workly について</string>
+    <string name="settings_version">バージョン %1$s</string>
+    <string name="settings_not_set">未設定</string>
+
+    <!-- 仕事の種類 -->
+    <string name="work_types_title">仕事の種類</string>
+    <string name="work_types_add">仕事の種類を追加</string>
+    <string name="work_types_add_title">新しい仕事の種類</string>
+    <string name="work_types_edit_title">仕事の種類を編集</string>
+    <string name="work_types_name">名前</string>
+    <string name="work_types_rate">既定の時給</string>
+    <string name="work_types_empty_title">仕事の種類がありません</string>
+    <string name="work_types_empty_message">記録にラベルを付けるために追加してください。</string>
+    <string name="work_types_delete_title">この仕事の種類を削除しますか？</string>
+    <string name="work_types_delete_message">既存の記録は保存時の時給と名前を保つため、過去の収入は変わりません。</string>
+
+    <!-- エクスポート・インポートの結果 -->
+    <plurals name="export_csv_done">
+        <item quantity="other">%1$d 件の記録を CSV で書き出しました。</item>
+    </plurals>
+    <plurals name="export_json_done">
+        <item quantity="other">%1$d 件の記録を JSON で書き出しました。</item>
+    </plurals>
+    <string name="export_nothing">書き出す記録がまだありません。</string>
+    <string name="export_failed">ファイルを書き出せませんでした。</string>
+    <string name="import_preview_title">バックアップを読み込む</string>
+    <plurals name="import_preview_sessions">
+        <item quantity="other">%1$d 件の記録</item>
+    </plurals>
+    <plurals name="import_preview_work_types">
+        <item quantity="other">%1$d 件の仕事の種類</item>
+    </plurals>
+    <plurals name="import_preview_new">
+        <item quantity="other">%1$d 件の記録を追加します</item>
+    </plurals>
+    <plurals name="import_preview_duplicates">
+        <item quantity="other">%1$d 件はすでに存在するためスキップします</item>
+    </plurals>
+    <string name="import_confirm">読み込む</string>
+    <plurals name="import_done">
+        <item quantity="other">%1$d 件の記録と %2$d 件の仕事の種類を読み込みました。</item>
+    </plurals>
+    <string name="import_nothing_new">このバックアップの内容はすべて取り込み済みです。</string>
+    <string name="import_failed">このファイルは読み込めませんでした。</string>
+
+    <!-- 削除の確認 -->
+    <string name="delete_all_title">すべてのデータを削除しますか？</string>
+    <string name="delete_all_message">この端末のすべての記録と仕事の種類が削除されます。元に戻せません。必要なら先にバックアップを書き出してください。</string>
+    <string name="delete_all_confirm">すべて削除</string>
+    <string name="delete_all_done">すべてのデータを削除しました。</string>
+    <string name="delete_record_title">この記録を削除しますか？</string>
+    <string name="delete_record_message">この操作は元に戻せません。</string>
+
+    <!-- エラー -->
+    <string name="error_active_session_exists">すでに作業中のセッションがあります。</string>
+    <string name="error_no_active_session">そのセッションはすでに終了しています。</string>
+    <string name="error_end_time_equals_start">終了時刻は開始時刻と違う時刻にしてください。</string>
+    <string name="error_break_longer_than_work">休憩時間が労働時間を超えています。</string>
+    <string name="error_end_before_start">終了時刻を開始時刻より前にすることはできません。</string>
+    <string name="error_negative_rate">時給に負の値は指定できません。</string>
+    <string name="error_empty_work_type_name">名前を入力してください。</string>
+    <string name="error_duplicate_work_type_name">同じ名前の仕事の種類がすでにあります。</string>
+    <string name="error_invalid_import_file">このファイルは Workly のバックアップではありません。</string>
+    <string name="error_unsupported_backup_version">このバックアップは新しいバージョンの Workly で作成されています。</string>
+    <string name="error_database_error">保存中に問題が発生しました。もう一度お試しください。</string>
+    <string name="error_unknown">問題が発生しました。もう一度お試しください。</string>
+
+    <!-- 時間と金額 -->
+    <string name="duration_hm">%1$d時間%2$02d分</string>
+    <string name="duration_hms">%1$d時間%2$02d分%3$02d秒</string>
+    <string name="rate_per_hour">%1$s / 時間</string>
+
+    <!-- アクセシビリティ -->
+    <string name="cd_calendar_day_with_work">%1$s、記録あり</string>
+    <string name="cd_calendar_day">%1$s</string>
+    <string name="cd_previous_month">前の月</string>
+    <string name="cd_next_month">次の月</string>
+    <string name="cd_working_timer">%1$s 作業中</string>
+    <string name="cd_edit_record">記録を編集</string>
+
+    <!-- このアプリについて -->
+    <string name="about_title">このアプリについて</string>
+    <string name="about_tagline">労働時間と収入を静かに記録するオフラインアプリです。</string>
+    <string name="about_body">アカウントもクラウドも広告もありません。データはこの端末に保存され、主要な機能はオフラインで動作します。</string>
+    <string name="about_built_with">Kotlin、Jetpack Compose、Material 3、Room で作られています。</string>
+    <string name="about_license">MIT ライセンスで公開しています。</string>
+</resources>

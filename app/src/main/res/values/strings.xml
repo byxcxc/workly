@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Workly</string>
+
+    <!-- Names of the four starter work types. They are data, but they are created
+         in the user's language the first time the app runs. -->
+    <string-array name="default_work_types">
+        <item>Main Job</item>
+        <item>Part-time</item>
+        <item>Freelance</item>
+        <item>Other</item>
+    </string-array>
+
+    <!-- Bottom navigation -->
+    <string name="tab_home">Home</string>
+    <string name="tab_records">Records</string>
+    <string name="tab_statistics">Statistics</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Generic actions -->
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_close">Close</string>
+    <string name="action_set">Set</string>
+
+    <!-- Greetings shown on the dashboard -->
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="greeting_night">Good night</string>
+
+    <!-- Dashboard -->
+    <string name="home_worked_today">WORKED TODAY</string>
+    <string name="home_earned_today">EARNED TODAY</string>
+    <string name="home_working_now">WORKING NOW</string>
+    <string name="home_started_at">Started at %1$s</string>
+    <string name="home_live_earnings">Earnings so far</string>
+    <string name="home_this_week">THIS WEEK</string>
+    <plurals name="home_week_detail">
+        <item quantity="one">%1$s · %2$d session</item>
+        <item quantity="other">%1$s · %2$d sessions</item>
+    </plurals>
+    <string name="home_recent_records">RECENT RECORDS</string>
+    <string name="home_start_work">Start work</string>
+    <string name="home_finish_work">Finish work</string>
+    <string name="home_see_all">See all</string>
+    <string name="home_choose_work_type">Work type</string>
+    <string name="home_none_yet_message">Your finished sessions will show up here.</string>
+
+    <!-- First run empty state -->
+    <string name="empty_title">Your work starts here.</string>
+    <string name="empty_message">Track your hours and earnings effortlessly.</string>
+    <string name="empty_action">Start your first session</string>
+
+    <!-- Rate dialog -->
+    <string name="rate_dialog_title">Set your hourly rate</string>
+    <string name="rate_dialog_message">Workly needs a rate to calculate your earnings. You can change it any time in Settings.</string>
+    <string name="rate_dialog_field">Hourly rate</string>
+    <string name="rate_dialog_confirm">Set rate and start</string>
+
+    <!-- Records -->
+    <string name="records_title">Records</string>
+    <string name="records_view_list">List</string>
+    <string name="records_view_calendar">Calendar</string>
+    <string name="records_add">Add record</string>
+    <string name="records_empty_title">No records yet</string>
+    <string name="records_empty_message">Finished sessions will appear here.</string>
+    <string name="records_detail_title">Record</string>
+    <plurals name="records_session_count">
+        <item quantity="one">%1$d record</item>
+        <item quantity="other">%1$d records</item>
+    </plurals>
+    <string name="records_no_work_on_day">No work recorded on this day.</string>
+    <plurals name="records_work_days">
+        <item quantity="one">%1$d work day</item>
+        <item quantity="other">%1$d work days</item>
+    </plurals>
+
+    <!-- Session editor -->
+    <string name="editor_add_title">Add record</string>
+    <string name="editor_edit_title">Edit record</string>
+    <string name="editor_finish_title">Finish work</string>
+    <string name="editor_date">Date</string>
+    <string name="editor_start_time">Start time</string>
+    <string name="editor_end_time">End time</string>
+    <string name="editor_break_minutes">Break (minutes)</string>
+    <string name="editor_hourly_rate">Hourly rate</string>
+    <string name="editor_work_type">Work type</string>
+    <string name="editor_note">Note</string>
+    <string name="editor_note_hint">What did you work on?</string>
+    <string name="editor_worked_time">Worked time</string>
+    <string name="editor_income">Income</string>
+    <string name="editor_save_record">Save record</string>
+    <string name="editor_finish_and_save">Finish and save</string>
+    <string name="editor_discard">Discard session</string>
+    <string name="editor_discard_title">Discard this session?</string>
+    <string name="editor_discard_message">The running session will be deleted and nothing will be recorded.</string>
+    <string name="editor_ends_next_day">Ends the next day</string>
+    <string name="editor_set_now">Set to now</string>
+    <string name="editor_no_work_type">No work type</string>
+
+    <!-- Statistics -->
+    <string name="stats_title">Statistics</string>
+    <string name="stats_range_week">This week</string>
+    <string name="stats_range_month">This month</string>
+    <string name="stats_range_year">This year</string>
+    <string name="stats_range_custom">Custom</string>
+    <string name="stats_total_time">Total work time</string>
+    <string name="stats_total_income">Total income</string>
+    <string name="stats_work_days">Work days</string>
+    <string name="stats_avg_daily_time">Avg / work day</string>
+    <string name="stats_avg_daily_income">Avg income / work day</string>
+    <string name="stats_avg_hourly_rate">Avg hourly rate</string>
+    <string name="stats_income_trend">INCOME TREND</string>
+    <string name="stats_hours_trend">HOURS TREND</string>
+    <string name="stats_empty_title">Nothing to show yet</string>
+    <string name="stats_empty_message">Finish a session and your numbers will appear here.</string>
+    <string name="stats_range_label">%1$s – %2$s</string>
+    <plurals name="stats_session_count">
+        <item quantity="one">%1$d record in this period</item>
+        <item quantity="other">%1$d records in this period</item>
+    </plurals>
+    <string name="chart_no_data">No data for this period</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_general">GENERAL</string>
+    <string name="settings_section_appearance">APPEARANCE</string>
+    <string name="settings_section_data">DATA</string>
+    <string name="settings_section_about">ABOUT</string>
+    <string name="settings_default_rate">Default hourly rate</string>
+    <string name="settings_default_rate_hint">Used when a work type has no rate of its own.</string>
+    <string name="settings_currency">Currency</string>
+    <string name="settings_work_types">Work types</string>
+    <plurals name="settings_work_types_summary">
+        <item quantity="one">%1$d work type configured</item>
+        <item quantity="other">%1$d work types configured</item>
+    </plurals>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_first_day">First day of the week</string>
+    <string name="settings_export_csv">Export as CSV</string>
+    <string name="settings_export_csv_hint">A spreadsheet-friendly file of every record.</string>
+    <string name="settings_export_json">Export as JSON</string>
+    <string name="settings_export_json_hint">A complete backup you can import again.</string>
+    <string name="settings_import_json">Import from JSON</string>
+    <string name="settings_import_json_hint">Restore a backup. Duplicates are skipped.</string>
+    <string name="settings_delete_all">Delete all data</string>
+    <string name="settings_delete_all_hint">Removes every record and work type from this device.</string>
+    <string name="settings_about">About Workly</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_not_set">Not set</string>
+
+    <!-- Work types -->
+    <string name="work_types_title">Work types</string>
+    <string name="work_types_add">Add work type</string>
+    <string name="work_types_add_title">New work type</string>
+    <string name="work_types_edit_title">Edit work type</string>
+    <string name="work_types_name">Name</string>
+    <string name="work_types_rate">Default hourly rate</string>
+    <string name="work_types_empty_title">No work types</string>
+    <string name="work_types_empty_message">Add one to label your records.</string>
+    <string name="work_types_delete_title">Delete this work type?</string>
+    <string name="work_types_delete_message">Existing records keep the rate and name they were saved with, so past earnings never change.</string>
+
+    <!-- Import / export feedback -->
+    <plurals name="export_csv_done">
+        <item quantity="one">Exported %1$d record as CSV.</item>
+        <item quantity="other">Exported %1$d records as CSV.</item>
+    </plurals>
+    <plurals name="export_json_done">
+        <item quantity="one">Exported %1$d record as JSON.</item>
+        <item quantity="other">Exported %1$d records as JSON.</item>
+    </plurals>
+    <string name="export_nothing">There is nothing to export yet.</string>
+    <string name="export_failed">The file could not be written.</string>
+    <string name="import_preview_title">Import backup</string>
+    <plurals name="import_preview_sessions">
+        <item quantity="one">%1$d work record</item>
+        <item quantity="other">%1$d work records</item>
+    </plurals>
+    <plurals name="import_preview_work_types">
+        <item quantity="one">%1$d work type</item>
+        <item quantity="other">%1$d work types</item>
+    </plurals>
+    <plurals name="import_preview_new">
+        <item quantity="one">%1$d new record will be added</item>
+        <item quantity="other">%1$d new records will be added</item>
+    </plurals>
+    <plurals name="import_preview_duplicates">
+        <item quantity="one">%1$d record already exists and will be skipped</item>
+        <item quantity="other">%1$d records already exist and will be skipped</item>
+    </plurals>
+    <string name="import_confirm">Import</string>
+    <plurals name="import_done">
+        <item quantity="one">Imported %1$d record and %2$d work types.</item>
+        <item quantity="other">Imported %1$d records and %2$d work types.</item>
+    </plurals>
+    <string name="import_nothing_new">Everything in that backup is already here.</string>
+    <string name="import_failed">That file could not be imported.</string>
+
+    <!-- Destructive actions -->
+    <string name="delete_all_title">Delete all data?</string>
+    <string name="delete_all_message">Every work record and work type on this device will be deleted. This cannot be undone — export a backup first if you are not sure.</string>
+    <string name="delete_all_confirm">Delete everything</string>
+    <string name="delete_all_done">All data deleted.</string>
+    <string name="delete_record_title">Delete this record?</string>
+    <string name="delete_record_message">This cannot be undone.</string>
+
+    <!-- Errors -->
+    <string name="error_active_session_exists">A session is already running.</string>
+    <string name="error_no_active_session">That session is no longer running.</string>
+    <string name="error_end_time_equals_start">The end time must be different from the start time.</string>
+    <string name="error_break_longer_than_work">The break cannot be longer than the worked time.</string>
+    <string name="error_end_before_start">The end time cannot be before the start time.</string>
+    <string name="error_negative_rate">The hourly rate cannot be negative.</string>
+    <string name="error_empty_work_type_name">Please enter a name.</string>
+    <string name="error_duplicate_work_type_name">A work type with that name already exists.</string>
+    <string name="error_invalid_import_file">That file is not a valid Workly backup.</string>
+    <string name="error_unsupported_backup_version">That backup was created by a newer version of Workly.</string>
+    <string name="error_database_error">Something went wrong while saving. Please try again.</string>
+    <string name="error_unknown">Something went wrong. Please try again.</string>
+
+    <!-- Durations and money -->
+    <string name="duration_hm">%1$dh %2$02dm</string>
+    <string name="duration_hms">%1$dh %2$02dm %3$02ds</string>
+    <string name="rate_per_hour">%1$s / hour</string>
+
+    <!-- Accessibility -->
+    <string name="cd_calendar_day_with_work">%1$s, work recorded</string>
+    <string name="cd_calendar_day">%1$s</string>
+    <string name="cd_previous_month">Previous month</string>
+    <string name="cd_next_month">Next month</string>
+    <string name="cd_working_timer">Working for %1$s</string>
+    <string name="cd_edit_record">Edit record</string>
+
+    <!-- About -->
+    <string name="about_title">About</string>
+    <string name="about_tagline">A quiet, offline personal work hours and earnings tracker.</string>
+    <string name="about_body">No account, no cloud, no ads. Your data stays on this device, and the core app works completely offline.</string>
+    <string name="about_built_with">Built with Kotlin, Jetpack Compose, Material 3 and Room.</string>
+    <string name="about_license">Released under the MIT License.</string>
+</resources>
