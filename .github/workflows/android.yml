@@ -38,7 +38,9 @@ jobs:
 
       - name: Install Android SDK
         run: |
-          set -euo pipefail
+          # `pipefail` is deliberately off: the `yes` commands below get a broken
+          # pipe (and a non-zero status) as soon as sdkmanager exits.
+          set -eu
           SDK_ROOT="$HOME/android-sdk"
           mkdir -p "$SDK_ROOT/cmdline-tools"
           curl -sSLo /tmp/cmdline-tools.zip "$CMDLINE_TOOLS_URL"
@@ -52,7 +54,6 @@ jobs:
           SDKM="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
           yes | "$SDKM" --licenses > /dev/null 2>&1 || true
           yes | "$SDKM" --install "platforms;android-37.0" "build-tools;36.0.0" > /dev/null
-          "$SDKM" --list_installed
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5

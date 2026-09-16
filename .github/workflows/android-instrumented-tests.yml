@@ -41,7 +41,9 @@ jobs:
 
       - name: Install Android SDK
         run: |
-          set -euo pipefail
+          # `pipefail` is deliberately off: the `yes` commands below get a broken
+          # pipe (and a non-zero status) as soon as sdkmanager exits.
+          set -eu
           SDK_ROOT="$HOME/android-sdk"
           mkdir -p "$SDK_ROOT/cmdline-tools"
           curl -sSLo /tmp/cmdline-tools.zip "$CMDLINE_TOOLS_URL"
