@@ -16,6 +16,9 @@ on:
 permissions:
   contents: read
 
+env:
+  CMDLINE_TOOLS_URL: https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip
+
 concurrency:
   group: instrumented-${{ github.ref }}
   cancel-in-progress: true
@@ -28,24 +31,33 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install SDK packages
+      - name: Install Android SDK
         run: |
-          sdkmanager --install "platforms;android-37.0" "build-tools;36.0.0"
-          sdkmanager --licenses > /dev/null || true
+          set -euo pipefail
+          SDK_ROOT="$HOME/android-sdk"
+          mkdir -p "$SDK_ROOT/cmdline-tools"
+          curl -sSLo /tmp/cmdline-tools.zip "$CMDLINE_TOOLS_URL"
+          unzip -q /tmp/cmdline-tools.zip -d "$SDK_ROOT/cmdline-tools"
+          mv "$SDK_ROOT/cmdline-tools/cmdline-tools" "$SDK_ROOT/cmdline-tools/latest"
+
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "$SDK_ROOT/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+
+          SDKM="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKM" --licenses > /dev/null 2>&1 || true
+          yes | "$SDKM" --install "platforms;android-37.0" "build-tools;36.0.0" > /dev/null
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Enable KVM
         run: |

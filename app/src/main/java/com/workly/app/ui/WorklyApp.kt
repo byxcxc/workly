@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -47,6 +48,14 @@ private val bottomTabs = listOf(
 )
 
 /**
+ * Test tag for a bottom bar item.
+ *
+ * The tab label and the screen title are often the same word, so UI tests target
+ * the tab by tag rather than by text.
+ */
+fun bottomTabTag(route: String): String = "bottom_tab_$route"
+
+/**
  * Application shell: one snackbar host, one bottom bar, one navigation graph.
  */
 @Composable
@@ -73,6 +82,7 @@ fun WorklyApp() {
                         bottomTabs.forEach { tab ->
                             val selected = currentDestination?.hierarchy?.any { it.route == tab.route } == true
                             NavigationBarItem(
+                                modifier = Modifier.testTag(bottomTabTag(tab.route)),
                                 selected = selected,
                                 onClick = { navController.navigateToTab(tab.route) },
                                 icon = {
