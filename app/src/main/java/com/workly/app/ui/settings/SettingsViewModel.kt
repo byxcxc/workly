@@ -1,5 +1,6 @@
 package com.workly.app.ui.settings
 
+import androidx.compose.runtime.Immutable
 import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.ViewModel
@@ -7,10 +8,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.workly.app.AppGraph
+import com.workly.app.LocaleController
 import com.workly.app.data.backup.BackupManager
 import com.workly.app.data.backup.ImportPreview
 import com.workly.app.data.backup.WorklyBackup
+import com.workly.app.data.prefs.AppLanguage
 import com.workly.app.data.prefs.AppSettings
+import com.workly.app.data.prefs.DurationStyle
+import com.workly.app.data.prefs.ThemePalette
 import com.workly.app.data.prefs.SettingsRepository
 import com.workly.app.data.prefs.ThemeMode
 import com.workly.app.data.repository.WorkRepository
@@ -45,6 +50,7 @@ sealed interface SettingsEvent {
     data object AllDataDeleted : SettingsEvent
 }
 
+@Immutable
 data class SettingsUiState(
     val settings: AppSettings = AppSettings(),
     val workTypeCount: Int = 0,
@@ -104,8 +110,46 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setThemeMode(mode) }
     }
 
+    fun setThemePalette(palette: ThemePalette) {
+        viewModelScope.launch { settingsRepository.setThemePalette(palette) }
+    }
+
+    fun setDurationStyle(style: DurationStyle) {
+        viewModelScope.launch { settingsRepository.setDurationStyle(style) }
+    }
+
+    /** Stores the weekly target in minutes; 0 clears it. */
+    fun setWeeklyTargetHours(text: String) {
+        viewModelScope.launch {
+            val hours = text.trim().replace(',', '.').toBigDecimalOrNull()
+            if (hours == null || hours.signum() < 0) {
+                eventsChannel.send(SettingsEvent.Error(WorklyError.NEGATIVE_RATE))
+                return@launch
+            }
+            val minutes = hours.multiply(java.math.BigDecimal(60))
+                .setScale(0, java.math.RoundingMode.HALF_UP)
+                .toLong()
+            settingsRepository.setWeeklyTargetMinutes(minutes)
+        }
+    }
+
+    fun setRestDays(days: Set<DayOfWeek>) {
+        viewModelScope.launch { settingsRepository.setRestDays(days) }
+    }
+
     fun setFirstDayOfWeek(day: DayOfWeek) {
         viewModelScope.launch { settingsRepository.setFirstDayOfWeek(day) }
+    }
+
+    /**
+     * Stores the choice and hands it to the platform, which recreates the
+     * activity so every screen — and the launcher label — follows immediately.
+     */
+    fun setLanguage(language: AppLanguage) {
+        viewModelScope.launch {
+            settingsRepository.setLanguage(language)
+            LocaleController.apply(language)
+        }
     }
 
     // ---------------------------------------------------------------- export

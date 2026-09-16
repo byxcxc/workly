@@ -1,5 +1,6 @@
 package com.workly.app.ui.home
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -15,6 +16,7 @@ import com.workly.app.domain.Money
 import com.workly.app.domain.PeriodStats
 import com.workly.app.domain.StatsCalculator
 import com.workly.app.domain.WorkRange
+import com.workly.app.domain.WorkSchedule
 import com.workly.app.domain.WorklyError
 import com.workly.app.domain.WorklyException
 import kotlinx.coroutines.channels.Channel
@@ -30,6 +32,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 /** Everything the dashboard needs, in one immutable snapshot. */
+@Immutable
 data class HomeUiState(
     val isLoading: Boolean = true,
     val today: PeriodStats = PeriodStats(WorkRange.ofDay(LocalDate.now())),
@@ -42,7 +45,18 @@ data class HomeUiState(
     val effectiveHourlyRateMinor: Long = 0L,
     val hasAnySession: Boolean = false,
     val showRatePrompt: Boolean = false,
-)
+    /** Minutes the user aims to work this week; 0 when no target is set. */
+    val weekTargetMinutes: Long = 0L,
+    val weekPlannedDays: Int = 0,
+    val weekTotalDays: Int = 0,
+) {
+    val weekProgress: Float get() = WorkSchedule.progress(week.totalMinutes, weekTargetMinutes)
+
+    val weekRemainingMinutes: Long
+        get() = (weekTargetMinutes - week.totalMinutes).coerceAtLeast(0L)
+
+    val hasWeekTarget: Boolean get() = weekTargetMinutes > 0L
+}
 
 class HomeViewModel(
     private val workRepository: WorkRepository,
@@ -140,14 +154,11 @@ class HomeViewModel(
         val effectiveRate = selectedType?.defaultHourlyRateMinor?.takeIf { it > 0L }
             ?: settings.defaultHourlyRateMinor
 
+        val weekRange = WorkRange.ofWeek(today, settings.firstDayOfWeek)
         return HomeUiState(
             isLoading = false,
             today = StatsCalculator.summarize(completed, WorkRange.ofDay(today), zone),
-            week = StatsCalculator.summarize(
-                completed,
-                WorkRange.ofWeek(today, settings.firstDayOfWeek),
-                zone,
-            ),
+            week = StatsCalculator.summarize(completed, weekRange, zone),
             activeSession = sessions.firstOrNull { it.isActive },
             recentSessions = completed.sortedByDescending { it.startTime }.take(RECENT_LIMIT),
             workTypes = workTypes,
@@ -156,6 +167,13 @@ class HomeViewModel(
             effectiveHourlyRateMinor = effectiveRate,
             hasAnySession = completed.isNotEmpty(),
             showRatePrompt = draftState.showRatePrompt,
+            weekTargetMinutes = WorkSchedule.targetMinutes(
+                range = weekRange,
+                weeklyTargetMinutes = settings.weeklyTargetMinutes,
+                restDays = settings.restDays,
+            ),
+            weekPlannedDays = WorkSchedule.plannedWorkDays(weekRange, settings.restDays),
+            weekTotalDays = weekRange.dayCount.toInt(),
         )
     }
 

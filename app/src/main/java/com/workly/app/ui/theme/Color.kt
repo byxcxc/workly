@@ -1,6 +1,8 @@
 package com.workly.app.ui.theme
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import com.workly.app.data.prefs.ThemePalette
 
 /*
  * Workly palette.
@@ -92,3 +94,68 @@ val DarkAccentWorkingContainer = Color(0xFF3E2C05)
 val DarkAccentOnWorkingContainer = Color(0xFFFFE3B0)
 val DarkAccentChart = Color(0xFF9AA8E8)
 val DarkAccentChartSecondary = Color(0xFF5C6AA8)
+
+// Theme palettes ------------------------------------------------------------
+//
+// Only the brand colour (buttons, selection, charts) changes between palettes.
+// Backgrounds, surfaces and the semantic accents stay put, so switching theme
+// colour never changes what a colour *means*.
+
+/** The four brand colours of one palette. */
+@Immutable
+data class PaletteBrand(
+    val lightPrimary: Color,
+    val lightPrimaryContainer: Color,
+    val darkPrimary: Color,
+    val darkPrimaryContainer: Color,
+)
+
+/** Text on a light brand container. */
+val OnLightBrandContainer = Color(0xFF141821)
+
+/** Text on a dark brand container. */
+val OnDarkBrandContainer = Color(0xFFE4E6EE)
+
+fun paletteBrand(palette: ThemePalette): PaletteBrand = when (palette) {
+    ThemePalette.INDIGO -> PaletteBrand(
+        lightPrimary = Color(0xFF4A5A9E),
+        lightPrimaryContainer = Color(0xFFDEE1FF),
+        darkPrimary = Color(0xFFB4C0F5),
+        darkPrimaryContainer = Color(0xFF36437A),
+    )
+
+    ThemePalette.TEAL -> PaletteBrand(
+        lightPrimary = Color(0xFF2F6F73),
+        lightPrimaryContainer = Color(0xFFC9E9EA),
+        darkPrimary = Color(0xFF8FD3D6),
+        darkPrimaryContainer = Color(0xFF27585B),
+    )
+
+    ThemePalette.FOREST -> PaletteBrand(
+        lightPrimary = Color(0xFF3B6B45),
+        lightPrimaryContainer = Color(0xFFCDEBD1),
+        darkPrimary = Color(0xFF9FD3A3),
+        darkPrimaryContainer = Color(0xFF2E5436),
+    )
+
+    ThemePalette.SUNSET -> PaletteBrand(
+        lightPrimary = Color(0xFF8A5A2B),
+        lightPrimaryContainer = Color(0xFFF5DFC4),
+        darkPrimary = Color(0xFFE8B57F),
+        darkPrimaryContainer = Color(0xFF6B4322),
+    )
+
+    ThemePalette.ROSE -> PaletteBrand(
+        lightPrimary = Color(0xFF7D4A63),
+        lightPrimaryContainer = Color(0xFFF3D7E3),
+        darkPrimary = Color(0xFFE3AFC5),
+        darkPrimaryContainer = Color(0xFF5F3549),
+    )
+
+    ThemePalette.MONO -> PaletteBrand(
+        lightPrimary = Color(0xFF4A4E57),
+        lightPrimaryContainer = Color(0xFFDFE1E6),
+        darkPrimary = Color(0xFFC6C9D1),
+        darkPrimaryContainer = Color(0xFF3A3E46),
+    )
+}

@@ -23,7 +23,9 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -38,6 +40,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -86,6 +90,7 @@ fun HomeScreen(
     onOpenRecord: (Long) -> Unit,
     onFinishWork: (Long) -> Unit,
     onSeeAllRecords: () -> Unit,
+    onAddRecord: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
 ) {
@@ -131,6 +136,7 @@ fun HomeScreen(
         } else if (!state.hasAnySession && state.activeSession == null) {
             FirstRunPanel(
                 onStart = viewModel::startWork,
+                onAddRecord = onAddRecord,
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
         } else {
@@ -154,10 +160,15 @@ fun HomeScreen(
                 onStart = viewModel::startWork,
                 onFinish = { state.activeSession?.let { onFinishWork(it.id) } },
             )
+            if (state.activeSession == null) {
+                SecondaryAction(
+                    label = stringResource(R.string.home_add_record),
+                    onClick = onAddRecord,
+                )
+            }
             Spacer(Modifier.height(24.dp))
             WeekCard(
-                week = state.week,
-                currency = state.currency,
+                state = state,
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
             Spacer(Modifier.height(28.dp))
@@ -236,18 +247,8 @@ internal fun TodayCard(today: PeriodStats, currency: String) {
 
 @Composable
 internal fun WorkingNowCard(session: WorkSessionEntity) {
-    val elapsedSeconds = rememberElapsedSeconds(session.startTime)
-    val elapsedText = formatDurationWithSeconds(elapsedSeconds)
-    val income = formatMoney(
-        Money.incomeMinor(session.hourlyRateMinor, elapsedSeconds / 60),
-        session.currency,
-    )
-    val description = stringResource(R.string.cd_working_timer, "$elapsedText, $income")
-
     WorklyCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .semantics(mergeDescendants = true) { contentDescription = description },
+        modifier = Modifier.fillMaxWidth(),
         containerColor = WorklyTheme.accents.workingContainer,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -258,6 +259,34 @@ internal fun WorkingNowCard(session: WorkSessionEntity) {
                 color = WorklyTheme.accents.onWorkingContainer,
             )
         }
+        // Only this block re-reads the ticking clock, so the rest of the card is
+        // never recomposed while the timer runs.
+        LiveValues(
+            session = session,
+            startedAt = stringResource(R.string.home_started_at, formatTime(session.startTime)),
+        )
+    }
+}
+
+/**
+ * The once-a-second part of the running card.
+ *
+ * The elapsed time is derived from the start instant, so the display stays
+ * correct even if the app was in the background for an hour.
+ */
+@Composable
+private fun LiveValues(session: WorkSessionEntity, startedAt: String) {
+    val elapsedSeconds = rememberElapsedSeconds(session.startTime)
+    val elapsedText = formatDurationWithSeconds(elapsedSeconds)
+    val income = formatMoney(
+        Money.incomeMinor(session.hourlyRateMinor, elapsedSeconds / 60),
+        session.currency,
+    )
+    val description = stringResource(R.string.cd_working_timer, "$elapsedText, $income")
+
+    Column(
+        modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = description },
+    ) {
         Spacer(Modifier.height(10.dp))
         Text(
             text = elapsedText,
@@ -268,7 +297,7 @@ internal fun WorkingNowCard(session: WorkSessionEntity) {
         )
         Spacer(Modifier.height(6.dp))
         Text(
-            text = stringResource(R.string.home_started_at, formatTime(session.startTime)),
+            text = startedAt,
             style = MaterialTheme.typography.bodyMedium,
             color = WorklyTheme.accents.onWorkingContainer,
         )
@@ -286,7 +315,9 @@ internal fun WorkingNowCard(session: WorkSessionEntity) {
 }
 
 @Composable
-internal fun WeekCard(week: PeriodStats, currency: String, modifier: Modifier = Modifier) {
+internal fun WeekCard(state: HomeUiState, modifier: Modifier = Modifier) {
+    val week = state.week
+    val currency = state.currency
     WorklyCard(modifier = modifier.fillMaxWidth()) {
         SectionLabel(stringResource(R.string.home_this_week))
         Spacer(Modifier.height(10.dp))
@@ -306,19 +337,77 @@ internal fun WeekCard(week: PeriodStats, currency: String, modifier: Modifier = 
                 modifier = Modifier.weight(1f),
             )
         }
-        if (week.sessionCount > 0) {
-            Spacer(Modifier.height(10.dp))
+        if (state.hasWeekTarget) {
+            Spacer(Modifier.height(14.dp))
+            LinearProgressIndicator(
+                progress = { state.weekProgress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .clip(CircleShape),
+                trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            )
+            Spacer(Modifier.height(8.dp))
             Text(
-                text = pluralStringResource(
-                    R.plurals.home_week_detail,
-                    week.sessionCount,
-                    formatDuration(week.averageDailyMinutes),
-                    week.sessionCount,
-                ),
+                text = if (state.weekRemainingMinutes == 0L) {
+                    stringResource(R.string.home_target_reached)
+                } else {
+                    stringResource(
+                        R.string.home_target_progress,
+                        formatDuration(week.totalMinutes),
+                        formatDuration(state.weekTargetMinutes),
+                    ) + " · " + stringResource(
+                        R.string.home_target_remaining,
+                        formatDuration(state.weekRemainingMinutes),
+                    )
+                },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+        if (week.sessionCount > 0) {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = buildString {
+                    append(
+                        pluralStringResource(
+                            R.plurals.home_week_detail,
+                            week.sessionCount,
+                            formatDuration(week.averageDailyMinutes),
+                            week.sessionCount,
+                        ),
+                    )
+                    if (state.weekPlannedDays > 0) {
+                        append(" · ")
+                        val daysWorked = week.sessionCount.coerceAtMost(state.weekPlannedDays)
+                        append(
+                            pluralStringResource(
+                                R.plurals.home_week_planned,
+                                daysWorked,
+                                daysWorked,
+                                state.weekPlannedDays,
+                            ),
+                        )
+                    }
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/** Quieter, secondary action shown under the main button. */
+@Composable
+private fun SecondaryAction(label: String, onClick: () -> Unit) {
+    Spacer(Modifier.height(4.dp))
+    TextButton(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+    ) {
+        Text(text = label, style = MaterialTheme.typography.labelLarge)
     }
 }
 
@@ -385,7 +474,11 @@ private fun PrimaryAction(
 }
 
 @Composable
-private fun FirstRunPanel(onStart: () -> Unit, modifier: Modifier = Modifier) {
+private fun FirstRunPanel(
+    onStart: () -> Unit,
+    onAddRecord: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     WorklyCard(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(R.string.empty_title),
@@ -406,6 +499,9 @@ private fun FirstRunPanel(onStart: () -> Unit, modifier: Modifier = Modifier) {
             shape = MaterialTheme.shapes.large,
         ) {
             Text(stringResource(R.string.empty_action))
+        }
+        TextButton(onClick = onAddRecord, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.home_add_record))
         }
     }
 }

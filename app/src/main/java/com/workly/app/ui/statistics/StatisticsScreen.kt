@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -24,7 +26,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -42,7 +46,9 @@ import com.workly.app.ui.components.BarChartIcon
 import com.workly.app.ui.theme.WorklyTheme
 import com.workly.app.ui.util.formatDateShort
 import com.workly.app.ui.util.formatDuration
+import com.workly.app.ui.util.decimalHours
 import com.workly.app.ui.util.formatMoney
+import com.workly.app.ui.util.formatMoneyCompact
 import com.workly.app.ui.util.formatMonthShort
 import com.workly.app.ui.util.formatRate
 import com.workly.app.ui.util.formatWeekdayShort
@@ -125,7 +131,22 @@ fun StatisticsScreen(
             )
 
             Spacer(Modifier.height(16.dp))
-            MetricsCard(stats = state.stats, currency = state.currency)
+            MetricsCard(
+                stats = state.stats,
+                currency = state.currency,
+                plannedWorkDays = state.plannedWorkDays,
+                restDayCount = state.restDayCount,
+            )
+
+            if (state.hasTarget) {
+                Spacer(Modifier.height(16.dp))
+                TargetCard(
+                    workedMinutes = state.stats.totalMinutes,
+                    targetMinutes = state.targetMinutes,
+                    remainingMinutes = state.targetRemainingMinutes,
+                    progress = state.targetProgress,
+                )
+            }
 
             Spacer(Modifier.height(16.dp))
             TrendCard(
@@ -133,7 +154,7 @@ fun StatisticsScreen(
                 buckets = state.buckets,
                 mode = state.bucketMode,
                 valueOf = { it.incomeMinor.toFloat() },
-                valueLabel = { formatMoney(it.toLong(), state.currency) },
+                valueLabel = { formatMoneyCompact(it.toLong(), state.currency) },
                 totalLabel = formatMoney(state.stats.totalIncomeMinor, state.currency),
                 barColor = WorklyTheme.accents.chart,
             )
@@ -144,7 +165,12 @@ fun StatisticsScreen(
                 buckets = state.buckets,
                 mode = state.bucketMode,
                 valueOf = { it.minutes.toFloat() },
-                valueLabel = { formatDuration(it.toLong()) },
+                valueLabel = {
+                    stringResource(
+                        R.string.duration_compact_hours,
+                        decimalHours(it.toLong()),
+                    )
+                },
                 totalLabel = formatDuration(state.stats.totalMinutes),
                 barColor = WorklyTheme.accents.chartSecondary,
             )
@@ -186,7 +212,12 @@ fun StatisticsScreen(
 }
 
 @Composable
-private fun MetricsCard(stats: PeriodStats, currency: String) {
+private fun MetricsCard(
+    stats: PeriodStats,
+    currency: String,
+    plannedWorkDays: Int,
+    restDayCount: Int,
+) {
     WorklyCard(modifier = Modifier.fillMaxWidth()) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             StatBlock(
@@ -217,6 +248,23 @@ private fun MetricsCard(stats: PeriodStats, currency: String) {
         Spacer(Modifier.height(20.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             StatBlock(
+                label = stringResource(R.string.stats_planned_days),
+                value = stringResource(
+                    R.string.stats_planned_days_value,
+                    stats.workDays,
+                    plannedWorkDays,
+                ),
+                modifier = Modifier.weight(1f),
+            )
+            StatBlock(
+                label = stringResource(R.string.stats_rest_days),
+                value = restDayCount.toString(),
+                modifier = Modifier.weight(1f),
+            )
+        }
+        Spacer(Modifier.height(20.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            StatBlock(
                 label = stringResource(R.string.stats_avg_daily_income),
                 value = formatMoney(stats.averageDailyIncomeMinor, currency),
                 valueColor = WorklyTheme.accents.income,
@@ -228,6 +276,51 @@ private fun MetricsCard(stats: PeriodStats, currency: String) {
                 modifier = Modifier.weight(1f),
             )
         }
+    }
+}
+
+/** Progress towards the weekly target, scaled to the selected period. */
+@Composable
+private fun TargetCard(
+    workedMinutes: Long,
+    targetMinutes: Long,
+    remainingMinutes: Long,
+    progress: Float,
+) {
+    WorklyCard(modifier = Modifier.fillMaxWidth()) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            SectionLabel(
+                text = stringResource(R.string.stats_target),
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                text = stringResource(
+                    R.string.stats_target_progress,
+                    formatDuration(workedMinutes),
+                    formatDuration(targetMinutes),
+                ),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
+        Spacer(Modifier.height(12.dp))
+        LinearProgressIndicator(
+            progress = { progress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp)
+                .clip(CircleShape),
+            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = if (remainingMinutes == 0L) {
+                stringResource(R.string.home_target_reached)
+            } else {
+                stringResource(R.string.home_target_remaining, formatDuration(remainingMinutes))
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
@@ -256,6 +349,8 @@ private fun TrendCard(
                 labels = labels,
                 barColor = barColor,
                 contentDescription = "$title, $totalLabel",
+                // `map` is inline, so the composable label lambda can be used here.
+                valueLabels = values.map { valueLabel(it) },
             )
         }
     }

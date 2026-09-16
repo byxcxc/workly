@@ -26,7 +26,7 @@ object AppGraph {
     /** Application context, used for content resolvers and resources. */
     val appContext: Application get() = application
 
-    private val applicationScope: CoroutineScope by lazy {
+    val applicationScope: CoroutineScope by lazy {
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
     }
 

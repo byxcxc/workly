@@ -1,5 +1,6 @@
 package com.workly.app.data.local.entity
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -37,6 +38,7 @@ import java.time.Instant
         ),
     ],
 )
+@Immutable
 data class WorkSessionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,

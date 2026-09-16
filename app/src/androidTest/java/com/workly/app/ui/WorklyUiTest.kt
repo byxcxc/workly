@@ -158,6 +158,27 @@ class WorklyUiTest {
     }
 
     @Test
+    fun theLanguagePickerOffersEverySupportedLanguage() {
+        openTab(Routes.SETTINGS)
+        awaitText(text(R.string.settings_language))
+
+        clickText(text(R.string.settings_language), scroll = true)
+
+        // The names are never translated, so they read the same in every locale.
+        awaitText(text(R.string.language_name_english))
+        awaitText(text(R.string.language_name_japanese))
+        awaitText(text(R.string.language_name_chinese))
+        awaitText(text(R.string.settings_language_system))
+    }
+
+    @Test
+    fun theDashboardCanOpenTheManualRecorder() {
+        clickText(text(R.string.home_add_record), scroll = true)
+
+        awaitText(text(R.string.editor_add_title))
+    }
+
+    @Test
     fun startWorkThenFinishWorkRecordsASession() {
         startWorkFromDashboard()
         awaitText(text(R.string.home_working_now))

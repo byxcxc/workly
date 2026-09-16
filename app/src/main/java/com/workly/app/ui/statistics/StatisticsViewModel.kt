@@ -1,5 +1,6 @@
 package com.workly.app.ui.statistics
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -13,6 +14,7 @@ import com.workly.app.domain.PeriodStats
 import com.workly.app.domain.StatsCalculator
 import com.workly.app.domain.TimeBucket
 import com.workly.app.domain.WorkRange
+import com.workly.app.domain.WorkSchedule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +30,7 @@ enum class StatsPeriodOption { WEEK, MONTH, YEAR, CUSTOM }
 /** Granularity of the trend charts. */
 enum class BucketMode { DAY, MONTH }
 
+@Immutable
 data class StatisticsUiState(
     val isLoading: Boolean = true,
     val option: StatsPeriodOption = StatsPeriodOption.WEEK,
@@ -40,7 +43,19 @@ data class StatisticsUiState(
     val customStart: LocalDate? = null,
     val customEnd: LocalDate? = null,
     val isPickingCustomRange: Boolean = false,
-)
+    val restDays: Set<java.time.DayOfWeek> = com.workly.app.data.prefs.DEFAULT_REST_DAYS,
+    val plannedWorkDays: Int = 0,
+    val restDayCount: Int = 0,
+    /** Minutes the user aims to work in this period; 0 when no target is set. */
+    val targetMinutes: Long = 0L,
+) {
+    val hasTarget: Boolean get() = targetMinutes > 0L
+
+    val targetProgress: Float get() = WorkSchedule.progress(stats.totalMinutes, targetMinutes)
+
+    val targetRemainingMinutes: Long
+        get() = (targetMinutes - stats.totalMinutes).coerceAtLeast(0L)
+}
 
 class StatisticsViewModel(
     private val workRepository: WorkRepository,
@@ -102,8 +117,17 @@ class StatisticsViewModel(
             StatsCalculator.dailyBuckets(sessions, range, zone)
         }
 
+        val restDays = settings.restDays
         return StatisticsUiState(
             isLoading = false,
+            restDays = restDays,
+            plannedWorkDays = WorkSchedule.plannedWorkDays(range, restDays),
+            restDayCount = WorkSchedule.plannedRestDays(range, restDays),
+            targetMinutes = WorkSchedule.targetMinutes(
+                range = range,
+                weeklyTargetMinutes = settings.weeklyTargetMinutes,
+                restDays = restDays,
+            ),
             option = draftState.option,
             range = range,
             stats = StatsCalculator.summarize(sessions, range, zone),

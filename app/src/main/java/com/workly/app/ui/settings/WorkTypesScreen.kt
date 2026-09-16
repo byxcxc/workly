@@ -1,5 +1,6 @@
 package com.workly.app.ui.settings
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -64,6 +65,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@Immutable
 data class WorkTypesUiState(
     val isLoading: Boolean = true,
     val workTypes: List<WorkTypeEntity> = emptyList(),

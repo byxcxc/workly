@@ -1,5 +1,6 @@
 package com.workly.app.ui.records
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -34,6 +35,7 @@ import java.time.ZoneId
 /** The three ways the shared editor is used. */
 enum class SessionEditorMode { CREATE, EDIT, FINISH }
 
+@Immutable
 data class SessionEditorUiState(
     val mode: SessionEditorMode = SessionEditorMode.CREATE,
     val isLoading: Boolean = true,

@@ -2,12 +2,12 @@ package com.workly.app
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.workly.app.data.prefs.AppSettings
@@ -15,7 +15,7 @@ import com.workly.app.ui.WorklyApp
 import com.workly.app.ui.theme.WorklyTheme
 import com.workly.app.ui.theme.shouldUseDarkTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -37,7 +37,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            WorklyTheme(themeMode = settings.themeMode) {
+            WorklyTheme(
+                themeMode = settings.themeMode,
+                palette = settings.themePalette,
+                durationStyle = settings.durationStyle,
+            ) {
                 WorklyApp()
             }
         }

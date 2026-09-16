@@ -38,6 +38,7 @@ fun WorklyNavHost(
                 onOpenRecord = { id -> navController.navigate(Routes.sessionDetail(id)) },
                 onFinishWork = { id -> navController.navigate(Routes.sessionFinish(id)) },
                 onSeeAllRecords = { navController.navigateToTab(Routes.RECORDS) },
+                onAddRecord = { navController.navigate(Routes.ADD_RECORD) },
             )
         }
 

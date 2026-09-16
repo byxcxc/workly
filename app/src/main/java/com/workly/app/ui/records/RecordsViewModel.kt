@@ -1,5 +1,6 @@
 package com.workly.app.ui.records
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -25,6 +26,7 @@ import java.time.ZoneId
 
 enum class RecordsViewMode { LIST, CALENDAR }
 
+@Immutable
 data class RecordsUiState(
     val isLoading: Boolean = true,
     val viewMode: RecordsViewMode = RecordsViewMode.LIST,
@@ -36,6 +38,7 @@ data class RecordsUiState(
     val selectedDateSessions: List<WorkSessionEntity> = emptyList(),
     val currency: String = AppSettings().currency,
     val firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
+    val restDays: Set<DayOfWeek> = com.workly.app.data.prefs.DEFAULT_REST_DAYS,
     val totalCount: Int = 0,
     val monthStats: PeriodStats = PeriodStats(WorkRange.ofMonth(YearMonth.now())),
     val dayStats: PeriodStats = PeriodStats(WorkRange.ofDay(LocalDate.now())),
@@ -93,6 +96,7 @@ class RecordsViewModel(
             selectedDateSessions = selected?.let { byDate[it] }.orEmpty(),
             currency = settings.currency,
             firstDayOfWeek = settings.firstDayOfWeek,
+            restDays = settings.restDays,
             totalCount = sessions.size,
             monthStats = StatsCalculator.summarize(
                 sessions,

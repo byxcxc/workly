@@ -1,5 +1,6 @@
 package com.workly.app.data.local.entity
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -15,6 +16,7 @@ import java.time.Instant
     tableName = "work_types",
     indices = [Index(value = ["name"], unique = true)],
 )
+@Immutable
 data class WorkTypeEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,

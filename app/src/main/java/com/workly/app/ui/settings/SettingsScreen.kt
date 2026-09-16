@@ -2,8 +2,10 @@ package com.workly.app.ui.settings
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,9 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +37,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.pluralStringResource
@@ -46,7 +52,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.workly.app.BuildConfig
 import com.workly.app.R
+import com.workly.app.data.prefs.AppLanguage
+import com.workly.app.data.prefs.DurationStyle
 import com.workly.app.data.prefs.SUPPORTED_CURRENCIES
+import com.workly.app.data.prefs.ThemePalette
 import com.workly.app.data.prefs.ThemeMode
 import com.workly.app.domain.Money
 import com.workly.app.domain.WorklyError
@@ -57,10 +66,15 @@ import com.workly.app.ui.components.ScreenHeader
 import com.workly.app.ui.components.SectionLabel
 import com.workly.app.ui.components.WorklyCard
 import com.workly.app.ui.components.showMessage
+import com.workly.app.ui.theme.paletteBrand
+import com.workly.app.ui.util.decimalHours
+import com.workly.app.ui.util.formatDuration
+import com.workly.app.ui.util.formatRate
 import com.workly.app.ui.util.rememberAppLocale
 import com.workly.app.ui.util.message
 import com.workly.app.ui.util.messageRes
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.shape.CircleShape
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -88,6 +102,11 @@ fun SettingsScreen(
     var showCurrencyDialog by remember { mutableStateOf(false) }
     var showThemeDialog by remember { mutableStateOf(false) }
     var showFirstDayDialog by remember { mutableStateOf(false) }
+    var showLanguageDialog by remember { mutableStateOf(false) }
+    var showThemeColorDialog by remember { mutableStateOf(false) }
+    var showDurationDialog by remember { mutableStateOf(false) }
+    var showWeeklyTargetDialog by remember { mutableStateOf(false) }
+    var showRestDaysDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     val today = remember { LocalDate.now().toString() }
@@ -171,10 +190,37 @@ fun SettingsScreen(
             )
             SettingsRowDivider()
             SettingRow(
+                title = stringResource(R.string.settings_weekly_target),
+                value = if (state.settings.hasWeeklyTarget) {
+                    stringResource(
+                        R.string.settings_weekly_target_value,
+                        formatDuration(state.settings.weeklyTargetMinutes),
+                    )
+                } else {
+                    stringResource(R.string.settings_not_set)
+                },
+                supporting = stringResource(R.string.settings_weekly_target_hint),
+                onClick = { showWeeklyTargetDialog = true },
+            )
+            SettingsRowDivider()
+            SettingRow(
+                title = stringResource(R.string.settings_rest_days),
+                value = restDaysSummary(state.settings.restDays, locale),
+                supporting = stringResource(R.string.settings_rest_days_hint),
+                onClick = { showRestDaysDialog = true },
+            )
+            SettingsRowDivider()
+            SettingRow(
                 title = stringResource(R.string.settings_work_types),
                 value = pluralStringResource(R.plurals.settings_work_types_summary, state.workTypeCount, state.workTypeCount),
                 onClick = onOpenWorkTypes,
                 trailingChevron = true,
+            )
+            SettingsRowDivider()
+            SettingRow(
+                title = stringResource(R.string.settings_language),
+                value = languageLabel(state.settings.language),
+                onClick = { showLanguageDialog = true },
             )
             SettingsRowDivider()
             SettingRow(
@@ -199,6 +245,19 @@ fun SettingsScreen(
                     },
                 ),
                 onClick = { showThemeDialog = true },
+            )
+            SettingsRowDivider()
+            SettingRow(
+                title = stringResource(R.string.settings_theme_color),
+                value = paletteLabel(state.settings.themePalette),
+                onClick = { showThemeColorDialog = true },
+                leadingSwatch = paletteBrand(state.settings.themePalette).lightPrimary,
+            )
+            SettingsRowDivider()
+            SettingRow(
+                title = stringResource(R.string.settings_duration_format),
+                value = durationStyleLabel(state.settings.durationStyle),
+                onClick = { showDurationDialog = true },
             )
         }
 
@@ -290,6 +349,68 @@ fun SettingsScreen(
             onSelect = { mode ->
                 showThemeDialog = false
                 viewModel.setThemeMode(mode)
+            },
+        )
+    }
+
+    if (showThemeColorDialog) {
+        ThemeColorDialog(
+            selected = state.settings.themePalette,
+            onDismiss = { showThemeColorDialog = false },
+            onSelect = { palette ->
+                showThemeColorDialog = false
+                viewModel.setThemePalette(palette)
+            },
+        )
+    }
+
+    if (showDurationDialog) {
+        ChoiceDialog(
+            title = stringResource(R.string.settings_duration_format),
+            options = DurationStyle.entries,
+            selected = state.settings.durationStyle,
+            labelOf = { style -> durationStyleLabel(style) },
+            onDismiss = { showDurationDialog = false },
+            onSelect = { style ->
+                showDurationDialog = false
+                viewModel.setDurationStyle(style)
+            },
+        )
+    }
+
+    if (showWeeklyTargetDialog) {
+        WeeklyTargetDialog(
+            initialMinutes = state.settings.weeklyTargetMinutes,
+            onDismiss = { showWeeklyTargetDialog = false },
+            onConfirm = { text ->
+                showWeeklyTargetDialog = false
+                viewModel.setWeeklyTargetHours(text)
+            },
+        )
+    }
+
+    if (showRestDaysDialog) {
+        RestDaysDialog(
+            selected = state.settings.restDays,
+            locale = locale,
+            onDismiss = { showRestDaysDialog = false },
+            onConfirm = { days ->
+                showRestDaysDialog = false
+                viewModel.setRestDays(days)
+            },
+        )
+    }
+
+    if (showLanguageDialog) {
+        ChoiceDialog(
+            title = stringResource(R.string.settings_language),
+            options = AppLanguage.entries,
+            selected = state.settings.language,
+            labelOf = { language -> languageLabel(language) },
+            onDismiss = { showLanguageDialog = false },
+            onSelect = { language ->
+                showLanguageDialog = false
+                viewModel.setLanguage(language)
             },
         )
     }
@@ -400,6 +521,7 @@ private fun SettingRow(
     supporting: String? = null,
     trailingChevron: Boolean = false,
     destructive: Boolean = false,
+    leadingSwatch: Color? = null,
 ) {
     Row(
         modifier = Modifier
@@ -409,6 +531,15 @@ private fun SettingRow(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (leadingSwatch != null) {
+            Box(
+                modifier = Modifier
+                    .size(18.dp)
+                    .clip(CircleShape)
+                    .background(leadingSwatch),
+            )
+            Spacer(Modifier.size(12.dp))
+        }
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
@@ -521,3 +652,177 @@ private fun <T> ChoiceDialog(
 }
 
 
+
+/**
+ * Shows each language in its own language, which is what users expect from a
+ * language picker.
+ */
+@Composable
+private fun languageLabel(language: AppLanguage): String = stringResource(
+    when (language) {
+        AppLanguage.SYSTEM -> R.string.settings_language_system
+        AppLanguage.ENGLISH -> R.string.language_name_english
+        AppLanguage.JAPANESE -> R.string.language_name_japanese
+        AppLanguage.CHINESE -> R.string.language_name_chinese
+    },
+)
+
+// ---------------------------------------------------------------- helpers
+
+@Composable
+private fun paletteLabel(palette: ThemePalette): String = stringResource(
+    when (palette) {
+        ThemePalette.INDIGO -> R.string.theme_palette_indigo
+        ThemePalette.TEAL -> R.string.theme_palette_teal
+        ThemePalette.FOREST -> R.string.theme_palette_forest
+        ThemePalette.SUNSET -> R.string.theme_palette_sunset
+        ThemePalette.ROSE -> R.string.theme_palette_rose
+        ThemePalette.MONO -> R.string.theme_palette_mono
+    },
+)
+
+@Composable
+private fun durationStyleLabel(style: DurationStyle): String = stringResource(
+    when (style) {
+        DurationStyle.HOURS_MINUTES -> R.string.duration_format_hours_minutes
+        DurationStyle.DECIMAL_HOURS -> R.string.duration_format_decimal
+    },
+)
+
+@Composable
+private fun restDaysSummary(days: Set<DayOfWeek>, locale: java.util.Locale): String {
+    if (days.isEmpty()) return stringResource(R.string.rest_days_none)
+    return remember(days, locale) {
+        DayOfWeek.entries
+            .filter { it in days }
+            .joinToString(", ") { it.getDisplayName(TextStyle.SHORT, locale) }
+    }
+}
+
+/** Colour picker showing an actual swatch of each palette. */
+@Composable
+private fun ThemeColorDialog(
+    selected: ThemePalette,
+    onSelect: (ThemePalette) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_theme_color)) },
+        text = {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                ThemePalette.entries.forEach { palette ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = palette == selected,
+                                role = Role.RadioButton,
+                                onClick = { onSelect(palette) },
+                            )
+                            .padding(vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(selected = palette == selected, onClick = null)
+                        Spacer(Modifier.size(12.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(18.dp)
+                                .clip(CircleShape)
+                                .background(paletteBrand(palette).lightPrimary),
+                        )
+                        Spacer(Modifier.size(12.dp))
+                        Text(text = paletteLabel(palette), style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) }
+        },
+    )
+}
+
+/** Weekday multi-select for the days the user does not work. */
+@Composable
+private fun RestDaysDialog(
+    selected: Set<DayOfWeek>,
+    locale: java.util.Locale,
+    onConfirm: (Set<DayOfWeek>) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var draft by remember(selected) { mutableStateOf(selected) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_rest_days)) },
+        text = {
+            Column {
+                Text(
+                    text = stringResource(R.string.settings_rest_days_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(8.dp))
+                DayOfWeek.entries.forEach { day ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .toggleable(
+                                value = day in draft,
+                                role = Role.Checkbox,
+                                onValueChange = { checked ->
+                                    draft = if (checked) draft + day else draft - day
+                                },
+                            )
+                            .padding(vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Checkbox(checked = day in draft, onCheckedChange = null)
+                        Spacer(Modifier.size(8.dp))
+                        Text(
+                            text = day.getDisplayName(TextStyle.FULL, locale),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(draft) }) { Text(stringResource(R.string.action_save)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+        },
+    )
+}
+
+/** The total hours the user aims to work in a week. */
+@Composable
+private fun WeeklyTargetDialog(
+    initialMinutes: Long,
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var text by remember {
+        mutableStateOf(if (initialMinutes > 0L) decimalHours(initialMinutes) else "")
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.weekly_target_dialog_title)) },
+        text = {
+            OutlinedTextField(
+                value = text,
+                onValueChange = { text = it },
+                label = { Text(stringResource(R.string.weekly_target_field)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(text) }) { Text(stringResource(R.string.action_save)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+        },
+    )
+}

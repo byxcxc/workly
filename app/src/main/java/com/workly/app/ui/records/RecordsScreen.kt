@@ -239,6 +239,7 @@ private fun CalendarPanel(
                 month = state.month,
                 firstDayOfWeek = state.firstDayOfWeek,
                 datesWithWork = state.datesWithWork,
+                restDays = state.restDays,
                 selectedDate = state.selectedDate,
                 onSelectDate = onSelectDate,
             )
@@ -336,6 +337,7 @@ private fun MonthGrid(
     month: YearMonth,
     firstDayOfWeek: java.time.DayOfWeek,
     datesWithWork: Set<LocalDate>,
+    restDays: Set<java.time.DayOfWeek>,
     selectedDate: LocalDate?,
     onSelectDate: (LocalDate) -> Unit,
 ) {
@@ -364,6 +366,7 @@ private fun MonthGrid(
                     DayCell(
                         date = date,
                         hasWork = date != null && date in datesWithWork,
+                        isRestDay = date != null && date.dayOfWeek in restDays,
                         isSelected = date != null && date == selectedDate,
                         isToday = date == LocalDate.now(),
                         onSelect = { date?.let(onSelectDate) },
@@ -379,6 +382,7 @@ private fun MonthGrid(
 private fun DayCell(
     date: LocalDate?,
     hasWork: Boolean,
+    isRestDay: Boolean,
     isSelected: Boolean,
     isToday: Boolean,
     onSelect: () -> Unit,
@@ -390,10 +394,10 @@ private fun DayCell(
     }
 
     val label = formatDateMedium(date)
-    val description = if (hasWork) {
-        stringResource(R.string.cd_calendar_day_with_work, label)
-    } else {
-        stringResource(R.string.cd_calendar_day, label)
+    val description = when {
+        hasWork -> stringResource(R.string.cd_calendar_day_with_work, label)
+        isRestDay -> stringResource(R.string.cd_calendar_rest_day, label)
+        else -> stringResource(R.string.cd_calendar_day, label)
     }
     val background = when {
         isSelected -> MaterialTheme.colorScheme.primary
@@ -402,6 +406,8 @@ private fun DayCell(
     }
     val contentColor = when {
         isSelected -> MaterialTheme.colorScheme.onPrimary
+        // A day off is drawn quietly, but the day number is still readable.
+        isRestDay -> MaterialTheme.colorScheme.onSurfaceVariant
         else -> MaterialTheme.colorScheme.onSurface
     }
 

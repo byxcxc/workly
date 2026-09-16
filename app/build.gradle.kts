@@ -88,6 +88,10 @@ ksp {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    // AppCompat is here for one reason: per-app language selection
+    // (AppCompatDelegate.setApplicationLocales), which is the API Google
+    // recommends and which also drives the system "App language" screen.
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
 
     implementation(libs.androidx.lifecycle.runtime.ktx)

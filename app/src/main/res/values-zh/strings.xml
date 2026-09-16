@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 首次启动时创建的工作类型 -->
+    <string-array name="default_work_types">
+        <item>主业</item>
+        <item>兼职</item>
+        <item>自由职业</item>
+        <item>其他</item>
+    </string-array>
+
+    <!-- 底部导航 -->
+    <string name="tab_home">首页</string>
+    <string name="tab_records">记录</string>
+    <string name="tab_statistics">统计</string>
+    <string name="tab_settings">设置</string>
+
+    <!-- 通用操作 -->
+    <string name="action_back">返回</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_save">保存</string>
+    <string name="action_delete">删除</string>
+    <string name="action_edit">编辑</string>
+    <string name="action_close">关闭</string>
+    <string name="action_set">确定</string>
+
+    <!-- 问候语 -->
+    <string name="greeting_morning">☀️ 早上好</string>
+    <string name="greeting_afternoon">🌤️ 下午好</string>
+    <string name="greeting_evening">🌙 晚上好</string>
+    <string name="greeting_night">✨ 辛苦了</string>
+
+    <!-- 首页 -->
+    <string name="home_worked_today">⏱️ 今日工时</string>
+    <string name="home_earned_today">💰 今日收入</string>
+    <string name="home_working_now">🔴 正在工作</string>
+    <string name="home_started_at">%1$s 开始</string>
+    <string name="home_live_earnings">当前收入</string>
+    <string name="home_this_week">🗓️ 本周</string>
+    <string name="home_recent_records">📋 最近记录</string>
+    <string name="home_start_work">▶️ 开始工作</string>
+    <string name="home_finish_work">⏹️ 结束工作</string>
+    <string name="home_see_all">查看全部</string>
+    <string name="home_choose_work_type">工作类型</string>
+    <string name="home_none_yet_message">完成的记录会显示在这里。</string>
+
+    <!-- 初次使用的空状态 -->
+    <string name="empty_title">👋 从这里开始。</string>
+    <string name="empty_message">轻松记录你的工时与收入。</string>
+    <string name="empty_action">开始第一次记录</string>
+
+    <!-- 时薪 -->
+    <string name="rate_dialog_title">设置时薪</string>
+    <string name="rate_dialog_message">Workly 需要时薪才能计算收入，你可以随时在设置中修改。</string>
+    <string name="rate_dialog_field">时薪</string>
+    <string name="rate_dialog_confirm">设置并开始</string>
+
+    <!-- 记录 -->
+    <string name="records_title">记录</string>
+    <string name="records_view_list">列表</string>
+    <string name="records_view_calendar">日历</string>
+    <string name="records_add">添加记录</string>
+    <string name="records_empty_title">🗒️ 还没有记录</string>
+    <string name="records_empty_message">完成的记录会显示在这里。</string>
+    <string name="records_detail_title">记录详情</string>
+    <string name="records_no_work_on_day">这一天没有记录。</string>
+
+    <!-- 记录编辑 -->
+    <string name="editor_add_title">添加记录</string>
+    <string name="editor_edit_title">编辑记录</string>
+    <string name="editor_finish_title">结束工作</string>
+    <string name="editor_date">日期</string>
+    <string name="editor_start_time">开始时间</string>
+    <string name="editor_end_time">结束时间</string>
+    <string name="editor_break_minutes">休息（分钟）</string>
+    <string name="editor_hourly_rate">时薪</string>
+    <string name="editor_work_type">工作类型</string>
+    <string name="editor_note">备注</string>
+    <string name="editor_note_hint">你做了什么工作？</string>
+    <string name="editor_worked_time">工作时长</string>
+    <string name="editor_income">收入</string>
+    <string name="editor_save_record">保存记录</string>
+    <string name="editor_finish_and_save">✅ 结束并保存</string>
+    <string name="editor_discard">放弃本次记录</string>
+    <string name="editor_discard_title">放弃这次记录？</string>
+    <string name="editor_discard_message">正在进行的记录将被删除，不会保存任何内容。</string>
+    <string name="editor_ends_next_day">次日结束</string>
+    <string name="editor_set_now">设为现在</string>
+    <string name="editor_no_work_type">无类型</string>
+
+    <!-- 统计 -->
+    <string name="stats_title">统计</string>
+    <string name="stats_range_week">本周</string>
+    <string name="stats_range_month">本月</string>
+    <string name="stats_range_year">今年</string>
+    <string name="stats_range_custom">自定义</string>
+    <string name="stats_total_time">总工时</string>
+    <string name="stats_total_income">总收入</string>
+    <string name="stats_work_days">工作天数</string>
+    <string name="stats_avg_daily_time">日均工时</string>
+    <string name="stats_avg_daily_income">日均收入</string>
+    <string name="stats_avg_hourly_rate">平均时薪</string>
+    <string name="stats_income_trend">💰 收入趋势</string>
+    <string name="stats_hours_trend">⏱️ 工时趋势</string>
+    <string name="stats_empty_title">📊 暂无数据</string>
+    <string name="stats_empty_message">完成一次记录后，这里会显示统计数据。</string>
+    <string name="chart_no_data">此期间暂无数据</string>
+    <string name="stats_range_label">%1$s 至 %2$s</string>
+
+    <!-- 设置 -->
+    <string name="settings_title">设置</string>
+    <string name="settings_section_general">通用</string>
+    <string name="settings_section_appearance">外观</string>
+    <string name="settings_section_data">数据</string>
+    <string name="settings_section_about">关于</string>
+    <string name="settings_default_rate">默认时薪</string>
+    <string name="settings_default_rate_hint">当工作类型没有单独设置时薪时使用。</string>
+    <string name="settings_currency">货币</string>
+    <string name="settings_work_types">工作类型</string>
+    <string name="settings_theme">主题</string>
+    <string name="settings_theme_system">跟随系统</string>
+    <string name="settings_theme_light">浅色</string>
+    <string name="settings_theme_dark">深色</string>
+    <string name="settings_first_day">每周起始日</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_language_system">跟随系统</string>
+    <string name="settings_export_csv">📤 导出为 CSV</string>
+    <string name="settings_export_csv_hint">可以用表格软件打开的完整记录。</string>
+    <string name="settings_export_json">📤 导出为 JSON</string>
+    <string name="settings_export_json_hint">可以再次导入的完整备份。</string>
+    <string name="settings_import_json">📥 从 JSON 导入</string>
+    <string name="settings_import_json_hint">恢复备份，重复的记录会被跳过。</string>
+    <string name="settings_delete_all">删除所有数据</string>
+    <string name="settings_delete_all_hint">删除这台设备上的全部记录和工作类型。</string>
+    <string name="settings_about">关于 Workly</string>
+    <string name="settings_not_set">未设置</string>
+    <string name="settings_version">版本 %1$s</string>
+
+    <!-- 工作类型 -->
+    <string name="work_types_title">工作类型</string>
+    <string name="work_types_add">添加工作类型</string>
+    <string name="work_types_add_title">新建工作类型</string>
+    <string name="work_types_edit_title">编辑工作类型</string>
+    <string name="work_types_name">名称</string>
+    <string name="work_types_rate">默认时薪</string>
+    <string name="work_types_empty_title">还没有工作类型</string>
+    <string name="work_types_empty_message">添加一个，用来给记录分类。</string>
+    <string name="work_types_delete_title">删除这个工作类型？</string>
+    <string name="work_types_delete_message">已有记录会保留保存时的时薪和名称，因此过去的收入不会改变。</string>
+
+    <!-- 导出与导入的结果 -->
+    <string name="export_nothing">还没有可以导出的记录。</string>
+    <string name="export_failed">无法写入文件。</string>
+    <string name="import_preview_title">导入备份</string>
+    <string name="import_confirm">导入</string>
+    <string name="import_nothing_new">这个备份里的内容已经全部存在。</string>
+    <string name="import_failed">无法导入这个文件。</string>
+
+    <!-- 删除确认 -->
+    <string name="delete_all_title">删除所有数据？</string>
+    <string name="delete_all_message">这台设备上的全部记录和工作类型都会被删除，且无法恢复。如果不确定，请先导出备份。</string>
+    <string name="delete_all_confirm">全部删除</string>
+    <string name="delete_all_done">已删除所有数据。</string>
+    <string name="delete_record_title">删除这条记录？</string>
+    <string name="delete_record_message">此操作无法撤销。</string>
+
+    <!-- 错误提示 -->
+    <string name="error_active_session_exists">已经有一个正在进行的工作记录。</string>
+    <string name="error_no_active_session">这条记录已经结束了。</string>
+    <string name="error_end_time_equals_start">结束时间不能和开始时间相同。</string>
+    <string name="error_break_longer_than_work">休息时间不能超过工作时长。</string>
+    <string name="error_end_before_start">结束时间不能早于开始时间。</string>
+    <string name="error_negative_rate">时薪不能为负数。</string>
+    <string name="error_empty_work_type_name">请输入名称。</string>
+    <string name="error_duplicate_work_type_name">已经有同名的工作类型。</string>
+    <string name="error_invalid_import_file">这个文件不是有效的 Workly 备份。</string>
+    <string name="error_unsupported_backup_version">这个备份由更新版本的 Workly 创建。</string>
+    <string name="error_database_error">保存时出现问题，请重试。</string>
+    <string name="error_unknown">出现问题，请重试。</string>
+
+    <!-- 时间与金额 -->
+    <string name="duration_hm">%1$d小时%2$02d分</string>
+    <string name="duration_hms">%1$d小时%2$02d分%3$02d秒</string>
+    <string name="rate_per_hour">%1$s / 小时</string>
+
+    <!-- 无障碍 -->
+    <string name="cd_calendar_day_with_work">%1$s，有记录</string>
+    <string name="cd_calendar_day">%1$s</string>
+    <string name="cd_previous_month">上个月</string>
+    <string name="cd_next_month">下个月</string>
+    <string name="cd_working_timer">已工作 %1$s</string>
+    <string name="cd_edit_record">编辑记录</string>
+
+    <!-- 关于 -->
+    <string name="about_title">关于</string>
+    <string name="about_tagline">一个安静的离线工时与收入记录工具。</string>
+    <string name="about_body">没有账号、没有云端、没有广告。数据只保存在这台设备上，核心功能完全离线可用。</string>
+    <string name="about_built_with">使用 Kotlin、Jetpack Compose、Material 3 和 Room 构建。</string>
+    <string name="about_license">基于 MIT 许可证发布。</string>
+
+    <!-- 复数形式：中文没有单复数区分 -->
+    <plurals name="records_session_count">
+        <item quantity="other">共 %1$d 条记录</item>
+    </plurals>
+    <plurals name="settings_work_types_summary">
+        <item quantity="other">已配置 %1$d 项</item>
+    </plurals>
+    <plurals name="records_work_days">
+        <item quantity="other">工作 %1$d 天</item>
+    </plurals>
+    <plurals name="stats_session_count">
+        <item quantity="other">此期间共 %1$d 条记录</item>
+    </plurals>
+    <plurals name="home_week_detail">
+        <item quantity="other">%1$s · %2$d 条记录</item>
+    </plurals>
+    <plurals name="import_preview_sessions">
+        <item quantity="other">%1$d 条工作记录</item>
+    </plurals>
+    <plurals name="import_preview_work_types">
+        <item quantity="other">%1$d 个工作类型</item>
+    </plurals>
+    <plurals name="import_preview_new">
+        <item quantity="other">将添加 %1$d 条记录</item>
+    </plurals>
+    <plurals name="import_preview_duplicates">
+        <item quantity="other">%1$d 条记录已存在，将被跳过</item>
+    </plurals>
+    <plurals name="export_csv_done">
+        <item quantity="other">已导出 %1$d 条记录为 CSV。</item>
+    </plurals>
+    <plurals name="export_json_done">
+        <item quantity="other">已导出 %1$d 条记录为 JSON。</item>
+    </plurals>
+    <plurals name="import_done">
+        <item quantity="other">已导入 %1$d 条记录和 %2$d 个工作类型。</item>
+    </plurals>
+
+    <!-- Theme colour, duration format and work schedule -->
+    <string name="settings_theme_color">主题颜色</string>
+    <string name="theme_palette_indigo">靛蓝</string>
+    <string name="theme_palette_teal">青碧</string>
+    <string name="theme_palette_forest">森林</string>
+    <string name="theme_palette_sunset">日落</string>
+    <string name="theme_palette_rose">玫瑰</string>
+    <string name="theme_palette_mono">石墨</string>
+    <string name="settings_duration_format">时长显示方式</string>
+    <string name="duration_format_hours_minutes">6小时30分</string>
+    <string name="duration_format_decimal">6.5小时</string>
+    <string name="duration_decimal_hours">%1$s小时</string>
+    <string name="settings_weekly_target">每周目标工时</string>
+    <string name="settings_weekly_target_hint">会在首页以进度形式显示。</string>
+    <string name="settings_weekly_target_value">每周 %1$s</string>
+    <string name="weekly_target_dialog_title">每周目标工时</string>
+    <string name="weekly_target_field">每周小时数</string>
+    <string name="settings_rest_days">休息日</string>
+    <string name="settings_rest_days_hint">你不上班的日子。</string>
+    <string name="rest_days_none">无</string>
+    <string name="home_add_record">直接记录工时</string>
+    <string name="home_target_progress">%1$s / %2$s</string>
+    <string name="home_target_remaining">还剩 %1$s</string>
+    <string name="home_target_reached">已达成每周目标 🎉</string>
+    <plurals name="home_week_planned">
+        <item quantity="other">工作日 %1$d / %2$d</item>
+    </plurals>
+    <string name="stats_planned_days">计划工作日</string>
+    <string name="stats_planned_days_value">%1$d / %2$d</string>
+    <string name="stats_rest_days">休息日数</string>
+    <string name="stats_target">目标</string>
+    <string name="stats_target_progress">%1$s / %2$s</string>
+    <string name="cd_calendar_rest_day">%1$s，休息日</string>
+    <string name="duration_compact_hours">%1$s小时</string>
+</resources>

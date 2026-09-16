@@ -27,31 +27,31 @@
     <string name="action_set">Set</string>
 
     <!-- Greetings shown on the dashboard -->
-    <string name="greeting_morning">Good morning</string>
-    <string name="greeting_afternoon">Good afternoon</string>
-    <string name="greeting_evening">Good evening</string>
-    <string name="greeting_night">Good night</string>
+    <string name="greeting_morning">☀️ Good morning</string>
+    <string name="greeting_afternoon">🌤️ Good afternoon</string>
+    <string name="greeting_evening">🌙 Good evening</string>
+    <string name="greeting_night">✨ Good night</string>
 
     <!-- Dashboard -->
-    <string name="home_worked_today">WORKED TODAY</string>
-    <string name="home_earned_today">EARNED TODAY</string>
-    <string name="home_working_now">WORKING NOW</string>
+    <string name="home_worked_today">⏱️ WORKED TODAY</string>
+    <string name="home_earned_today">💰 EARNED TODAY</string>
+    <string name="home_working_now">🔴 WORKING NOW</string>
     <string name="home_started_at">Started at %1$s</string>
     <string name="home_live_earnings">Earnings so far</string>
-    <string name="home_this_week">THIS WEEK</string>
+    <string name="home_this_week">🗓️ THIS WEEK</string>
     <plurals name="home_week_detail">
         <item quantity="one">%1$s · %2$d session</item>
         <item quantity="other">%1$s · %2$d sessions</item>
     </plurals>
-    <string name="home_recent_records">RECENT RECORDS</string>
-    <string name="home_start_work">Start work</string>
-    <string name="home_finish_work">Finish work</string>
+    <string name="home_recent_records">📋 RECENT RECORDS</string>
+    <string name="home_start_work">▶️ Start work</string>
+    <string name="home_finish_work">⏹️ Finish work</string>
     <string name="home_see_all">See all</string>
     <string name="home_choose_work_type">Work type</string>
     <string name="home_none_yet_message">Your finished sessions will show up here.</string>
 
     <!-- First run empty state -->
-    <string name="empty_title">Your work starts here.</string>
+    <string name="empty_title">👋 Your work starts here.</string>
     <string name="empty_message">Track your hours and earnings effortlessly.</string>
     <string name="empty_action">Start your first session</string>
 
@@ -66,7 +66,7 @@
     <string name="records_view_list">List</string>
     <string name="records_view_calendar">Calendar</string>
     <string name="records_add">Add record</string>
-    <string name="records_empty_title">No records yet</string>
+    <string name="records_empty_title">🗒️ No records yet</string>
     <string name="records_empty_message">Finished sessions will appear here.</string>
     <string name="records_detail_title">Record</string>
     <plurals name="records_session_count">
@@ -94,7 +94,7 @@
     <string name="editor_worked_time">Worked time</string>
     <string name="editor_income">Income</string>
     <string name="editor_save_record">Save record</string>
-    <string name="editor_finish_and_save">Finish and save</string>
+    <string name="editor_finish_and_save">✅ Finish and save</string>
     <string name="editor_discard">Discard session</string>
     <string name="editor_discard_title">Discard this session?</string>
     <string name="editor_discard_message">The running session will be deleted and nothing will be recorded.</string>
@@ -114,9 +114,9 @@
     <string name="stats_avg_daily_time">Avg / work day</string>
     <string name="stats_avg_daily_income">Avg income / work day</string>
     <string name="stats_avg_hourly_rate">Avg hourly rate</string>
-    <string name="stats_income_trend">INCOME TREND</string>
-    <string name="stats_hours_trend">HOURS TREND</string>
-    <string name="stats_empty_title">Nothing to show yet</string>
+    <string name="stats_income_trend">💰 INCOME TREND</string>
+    <string name="stats_hours_trend">⏱️ HOURS TREND</string>
+    <string name="stats_empty_title">📊 Nothing to show yet</string>
     <string name="stats_empty_message">Finish a session and your numbers will appear here.</string>
     <string name="stats_range_label">%1$s – %2$s</string>
     <plurals name="stats_session_count">
@@ -144,11 +144,13 @@
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_first_day">First day of the week</string>
-    <string name="settings_export_csv">Export as CSV</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_system">System default</string>
+    <string name="settings_export_csv">📤 Export as CSV</string>
     <string name="settings_export_csv_hint">A spreadsheet-friendly file of every record.</string>
-    <string name="settings_export_json">Export as JSON</string>
+    <string name="settings_export_json">📤 Export as JSON</string>
     <string name="settings_export_json_hint">A complete backup you can import again.</string>
-    <string name="settings_import_json">Import from JSON</string>
+    <string name="settings_import_json">📥 Import from JSON</string>
     <string name="settings_import_json_hint">Restore a backup. Duplicates are skipped.</string>
     <string name="settings_delete_all">Delete all data</string>
     <string name="settings_delete_all_hint">Removes every record and work type from this device.</string>
@@ -226,6 +228,12 @@
     <string name="error_database_error">Something went wrong while saving. Please try again.</string>
     <string name="error_unknown">Something went wrong. Please try again.</string>
 
+    <!-- Language names are always shown in their own language, so these three
+         are deliberately not translated. -->
+    <string name="language_name_english" translatable="false">English</string>
+    <string name="language_name_japanese" translatable="false">日本語</string>
+    <string name="language_name_chinese" translatable="false">中文（简体）</string>
+
     <!-- Durations and money -->
     <string name="duration_hm">%1$dh %2$02dm</string>
     <string name="duration_hms">%1$dh %2$02dm %3$02ds</string>
@@ -245,4 +253,40 @@
     <string name="about_body">No account, no cloud, no ads. Your data stays on this device, and the core app works completely offline.</string>
     <string name="about_built_with">Built with Kotlin, Jetpack Compose, Material 3 and Room.</string>
     <string name="about_license">Released under the MIT License.</string>
+
+    <!-- Theme colour, duration format and work schedule -->
+    <string name="settings_theme_color">Theme colour</string>
+    <string name="theme_palette_indigo">Indigo</string>
+    <string name="theme_palette_teal">Teal</string>
+    <string name="theme_palette_forest">Forest</string>
+    <string name="theme_palette_sunset">Sunset</string>
+    <string name="theme_palette_rose">Rose</string>
+    <string name="theme_palette_mono">Graphite</string>
+    <string name="settings_duration_format">Duration format</string>
+    <string name="duration_format_hours_minutes">6h 30m</string>
+    <string name="duration_format_decimal">6.5h</string>
+    <string name="duration_decimal_hours">%1$s h</string>
+    <string name="settings_weekly_target">Weekly target</string>
+    <string name="settings_weekly_target_hint">Shown as progress on the dashboard.</string>
+    <string name="settings_weekly_target_value">%1$s / week</string>
+    <string name="weekly_target_dialog_title">Weekly target</string>
+    <string name="weekly_target_field">Hours per week</string>
+    <string name="settings_rest_days">Rest days</string>
+    <string name="settings_rest_days_hint">Days you do not work.</string>
+    <string name="rest_days_none">None</string>
+    <string name="home_add_record">Log time manually</string>
+    <string name="home_target_progress">%1$s of %2$s</string>
+    <string name="home_target_remaining">%1$s to go</string>
+    <string name="home_target_reached">Weekly target reached 🎉</string>
+    <plurals name="home_week_planned">
+        <item quantity="one">%1$d of %2$d work day</item>
+        <item quantity="other">%1$d of %2$d work days</item>
+    </plurals>
+    <string name="stats_planned_days">Planned work days</string>
+    <string name="stats_planned_days_value">%1$d / %2$d</string>
+    <string name="stats_rest_days">Rest days</string>
+    <string name="stats_target">Target</string>
+    <string name="stats_target_progress">%1$s of %2$s</string>
+    <string name="cd_calendar_rest_day">%1$s, rest day</string>
+    <string name="duration_compact_hours">%1$sh</string>
 </resources>

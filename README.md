@@ -38,21 +38,37 @@ local database on your device and the core app works completely offline.
 - **Statistics**: this week / this month / this year / custom range, with total
   time, total income, work days, averages and two simple trend charts
 
+**Insight, charts that say something**
+
+- Every chart prints each bar's value, and the numbers are dropped only when
+  they would collide
+- Work schedule: a weekly hours target and the days you do not work. The
+  dashboard and statistics show progress against the target, scaled to the
+  period you are looking at, and the calendar marks your rest days
+
 **Configuration**
 
 - Default hourly rate and currency (per currency decimal rules — ¥12,480 or
   $12,480.50)
 - Work types with their own default rate; choosing a type fills in its rate
-- Light / dark / system theme, first day of the week
+- Light / dark / system theme plus six theme colours (indigo, teal, forest,
+  sunset, rose, graphite)
+- Durations as `6h 30m` or as `6.5h`, whichever reads better to you
+- First day of the week, weekly target, rest days
 - **Export** to CSV (spreadsheet friendly) or JSON (complete backup) and
   **import** a JSON backup with duplicate detection
+- **Log time manually** straight from the dashboard, for work you forgot to track
 
 **Quality**
 
-- English and Japanese, all text in resources
+- English, Japanese and Simplified Chinese, all text in resources
+- In-app language picker (and the system "App language" screen on Android 13+),
+  with the choice remembered across launches
 - Material 3, dark theme, generous touch targets, content descriptions,
   screen-reader friendly values and support for large font scaling
 - Money is stored as integer minor units — no floating point rounding drift
+- Compose state holders are annotated `@Immutable` and the once-a-second timer
+  is scoped to the two numbers it updates, so lists and cards skip recomposition
 - Times are stored as `Instant` (UTC) and only converted to the device time zone
   for display, so travel and time-zone changes never shift history
 - Cross-midnight sessions (`23:00 → 02:00 = 3h`) are handled correctly
@@ -216,7 +232,7 @@ commented template at the bottom of `.github/workflows/android.yml`.
 ./gradlew connectedDebugAndroidTest # instrumented tests (device or emulator)
 ```
 
-The JVM suite is 68 tests and the instrumented suite is 37 tests, and both are
+The JVM suite is 85 tests and the instrumented suite is 38 tests, and both are
 green in CI.
 
 **JVM unit tests** (`app/src/test/`) cover the rules that are easy to get wrong:
@@ -226,6 +242,8 @@ green in CI.
 - income maths and half-up rounding, JPY (0 decimals) vs USD (2 decimals)
 - validation: identical start/end, break longer than the work, negative rate
 - daily / weekly / monthly / yearly aggregation, work days and averages
+- the work schedule: planned work days, rest days, period targets and progress
+- decimal-hour formatting (`6.5`, `8`, `7.33`)
 - week ranges for a configurable first day of the week
 - month calendar grid shape and padding
 - CSV escaping, ordering and money formatting
@@ -237,8 +255,9 @@ and the real UI on an emulator:
 - DAO and schema behaviour (converters, unique indexes, foreign key `SET_NULL`)
 - repository rules: start, finish, discard, edit, delete, import de-duplication
 - CSV/JSON export and JSON import round trips
-- Compose flows: start work, finish work, add, edit, delete, bottom navigation,
-  and restoring a running session after leaving the dashboard
+- Compose flows: start work, finish work, add, edit, delete, manual entry from
+  the dashboard, the language picker, bottom navigation, and restoring a running
+  session after leaving the dashboard
 
 The instrumented tests need a device because Room requires the Android SQLite
 implementation.
@@ -262,6 +281,7 @@ the repository.
 - [ ] Home screen widget and a quick-settings tile for start/stop
 - [ ] Optional reminder notification if a session runs unusually long
 - [ ] Overtime / multiplier rates and per-day rate overrides
+- [ ] A dashboard widget showing progress towards the weekly target
 - [ ] Tags and a search field in Records
 - [ ] Additional languages (the resource layout is ready)
 - [ ] Optional encrypted cloud sync — still no account required for the core app

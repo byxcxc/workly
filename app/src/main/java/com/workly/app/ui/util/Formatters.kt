@@ -5,7 +5,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import com.workly.app.R
+import com.workly.app.data.prefs.DurationStyle
 import com.workly.app.domain.Money
+import com.workly.app.ui.theme.LocalDurationStyle
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
@@ -52,12 +56,31 @@ fun formatRate(minorUnits: Long, currencyCode: String): String {
     return stringResource(R.string.rate_per_hour, money)
 }
 
-/** `7h 32m` */
+/**
+ * A duration in the format the user picked: `7h 32m` or `7.53h`.
+ *
+ * The choice is read from the theme, so every screen follows it without having
+ * to thread a parameter through.
+ */
 @Composable
 fun formatDuration(minutes: Long): String {
     val safe = minutes.coerceAtLeast(0L)
-    return stringResource(R.string.duration_hm, safe / 60, safe % 60)
+    return when (LocalDurationStyle.current) {
+        DurationStyle.HOURS_MINUTES -> stringResource(R.string.duration_hm, safe / 60, safe % 60)
+        DurationStyle.DECIMAL_HOURS ->
+            stringResource(R.string.duration_decimal_hours, decimalHours(safe))
+    }
 }
+
+/**
+ * Minutes as decimal hours without the unit: 390 -> `6.5`, 480 -> `8`.
+ * Trailing zeros are dropped so whole hours stay short.
+ */
+fun decimalHours(minutes: Long): String =
+    BigDecimal(minutes.coerceAtLeast(0L))
+        .divide(BigDecimal(60), 2, RoundingMode.HALF_UP)
+        .stripTrailingZeros()
+        .toPlainString()
 
 /** `7h 32m 12s`, used by the live timer. */
 @Composable
@@ -69,12 +92,6 @@ fun formatDurationWithSeconds(totalSeconds: Long): String {
         (safe % 3600) / 60,
         safe % 60,
     )
-}
-
-/** Hours with one decimal, for chart axis labels: `7.5h`. */
-fun formatHoursShort(minutes: Long): String {
-    val hours = minutes / 60.0
-    return if (hours >= 10) String.format(Locale.ROOT, "%.0fh", hours) else String.format(Locale.ROOT, "%.1fh", hours)
 }
 
 @Composable

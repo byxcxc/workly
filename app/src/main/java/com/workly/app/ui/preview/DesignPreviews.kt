@@ -21,6 +21,7 @@ import com.workly.app.ui.components.PlayIcon
 import com.workly.app.ui.components.SessionRow
 import com.workly.app.ui.components.StatBlock
 import com.workly.app.ui.components.WorklyCard
+import com.workly.app.ui.home.HomeUiState
 import com.workly.app.ui.home.TodayCard
 import com.workly.app.ui.home.WeekCard
 import com.workly.app.ui.home.WorkingNowCard
@@ -89,7 +90,15 @@ private fun HomeTodayPreview() {
             Column(modifier = Modifier.padding(20.dp)) {
                 TodayCard(today = previewStats, currency = "JPY")
                 Spacer(Modifier.height(16.dp))
-                WeekCard(week = previewWeek, currency = "JPY")
+                WeekCard(
+                    state = HomeUiState(
+                        week = previewWeek,
+                        currency = "JPY",
+                        weekTargetMinutes = 2_400L,
+                        weekPlannedDays = 5,
+                        weekTotalDays = 7,
+                    ),
+                )
             }
         }
     }
