@@ -80,6 +80,14 @@ class WorklyUiTest {
 
     private fun sessionCount(): Int = runBlocking { AppGraph.workRepository.sessionCount() }
 
+    /** Sessions that have been finished; a running session is not counted. */
+    private fun finishedCount(): Int =
+        runBlocking { AppGraph.workRepository.getAllSessions().count { it.endTime != null } }
+
+    private fun awaitFinishedCount(expected: Int, timeoutMillis: Long = 15_000L) {
+        rule.waitUntil(timeoutMillis) { finishedCount() == expected }
+    }
+
     private fun awaitSessionCount(expected: Int, timeoutMillis: Long = 15_000L) {
         rule.waitUntil(timeoutMillis) { sessionCount() == expected }
     }
@@ -161,7 +169,7 @@ class WorklyUiTest {
         // editor is already valid.
         clickText(text(R.string.editor_finish_and_save), scroll = true)
 
-        awaitSessionCount(1)
+        awaitFinishedCount(1)
         awaitText(text(R.string.home_worked_today))
     }
 
@@ -200,7 +208,7 @@ class WorklyUiTest {
         clickText("Sprint planning", substring = true)
         awaitText(text(R.string.records_detail_title))
 
-        rule.onNodeWithContentDescription(text(R.string.action_delete)).performClick()
+        clickText(text(R.string.action_delete), scroll = true)
         awaitText(text(R.string.delete_record_title))
         rule.onNodeWithTag(CONFIRM_BUTTON_TAG).performClick()
 

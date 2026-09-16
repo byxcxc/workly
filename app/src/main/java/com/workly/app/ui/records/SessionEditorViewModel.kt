@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -72,6 +73,7 @@ class SessionEditorViewModel(
     private val settingsRepository: SettingsRepository,
     private val mode: SessionEditorMode,
     private val sessionId: Long?,
+    private val now: () -> Instant = { Instant.now() },
 ) : ViewModel() {
 
     private val draft = MutableStateFlow(EditorDraft())
@@ -144,7 +146,8 @@ class SessionEditorViewModel(
 
     fun onStartTimeChange(time: LocalTime) = draft.update { it.copy(startTime = time) }
 
-    fun onEndTimeChange(time: LocalTime) = draft.update { it.copy(endTime = time) }
+    fun onEndTimeChange(time: LocalTime) =
+        draft.update { it.copy(endTime = time, endTimeEdited = true) }
 
     fun onBreakChange(text: String) =
         draft.update { it.copy(breakText = text.filter(Char::isDigit).take(4)) }
@@ -164,9 +167,14 @@ class SessionEditorViewModel(
         )
     }
 
-    /** Puts the end time back to "right now" on the finish screen. */
+    /**
+     * Puts the end time back to "right now" on the finish screen.
+     *
+     * This counts as *not* edited: "now" keeps second precision so a session that
+     * is finished inside the same minute it started can still be saved.
+     */
     fun setEndTimeToNow() = draft.update {
-        it.copy(endTime = LocalTime.now().withSecond(0).withNano(0))
+        it.copy(endTime = LocalTime.now().withSecond(0).withNano(0), endTimeEdited = false)
     }
 
     fun save() {
@@ -272,12 +280,7 @@ class SessionEditorViewModel(
         val breakMinutes = draftState.breakText.toIntOrNull() ?: 0
         val zone = ZoneId.systemDefault()
         val startInstant = draftState.startDate.atTime(draftState.startTime).atZone(zone).toInstant()
-        val endInstant = WorkTime.resolveEndInstant(
-            startDate = draftState.startDate,
-            startTime = draftState.startTime,
-            endTime = draftState.endTime,
-            zone = zone,
-        )
+        val endInstant = resolveEndInstant(draftState, startInstant, zone)
         val validation = SessionValidator.validate(
             start = startInstant,
             end = endInstant,
@@ -309,6 +312,32 @@ class SessionEditorViewModel(
         )
     }
 
+    /**
+     * Resolves the end instant for the current draft.
+     *
+     * Normally the picked clock times decide. The exception is a running session
+     * that is finished before the next full minute: the start and end clock times
+     * are then identical, which the validator would reject, yet the user clearly
+     * meant "now". In that one case the real instant is used, so the record is
+     * saved with the (short) time that actually elapsed.
+     */
+    private fun resolveEndInstant(
+        draftState: EditorDraft,
+        startInstant: Instant,
+        zone: ZoneId,
+    ): Instant {
+        val picked = WorkTime.resolveEndInstant(
+            startDate = draftState.startDate,
+            startTime = draftState.startTime,
+            endTime = draftState.endTime,
+            zone = zone,
+        )
+        val defaultFinishTime = mode == SessionEditorMode.FINISH && !draftState.endTimeEdited
+        if (!defaultFinishTime || picked.isAfter(startInstant)) return picked
+        val now = now()
+        return if (now.isAfter(startInstant)) now else startInstant.plusSeconds(1)
+    }
+
     private data class EditorDraft(
         val startDate: LocalDate = LocalDate.now(),
         val startTime: LocalTime = LocalTime.now(),
@@ -317,6 +346,7 @@ class SessionEditorViewModel(
         val rateText: String = "",
         val selectedWorkTypeId: Long? = null,
         val note: String = "",
+        val endTimeEdited: Boolean = false,
         val loaded: Boolean = false,
         val isSaving: Boolean = false,
         val saved: Boolean = false,
