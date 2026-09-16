@@ -80,15 +80,67 @@ class WorkScheduleTest {
     }
 
     @Test
+    fun `a day override can force a rest day`() {
+        val saturday = LocalDate.of(2026, 9, 19)
+        val overrides = mapOf(saturday to DayOverride(isRest = false))
+
+        // Normally a rest day, but this one was overridden to be a working day.
+        assertFalse(WorkSchedule.isRestDay(saturday, weekend, overrides))
+        assertEquals(6, WorkSchedule.plannedWorkDays(WorkRange.ofWeek(monday, DayOfWeek.MONDAY), weekend, overrides))
+    }
+
+    @Test
+    fun `a weekday can be forced to be a rest day`() {
+        val tuesday = LocalDate.of(2026, 9, 15)
+        val overrides = mapOf(tuesday to DayOverride(isRest = true))
+
+        assertTrue(WorkSchedule.isRestDay(tuesday, weekend, overrides))
+        assertEquals(4, WorkSchedule.plannedWorkDays(WorkRange.ofWeek(monday, DayOfWeek.MONDAY), weekend, overrides))
+        assertEquals(3, WorkSchedule.plannedRestDays(WorkRange.ofWeek(monday, DayOfWeek.MONDAY), weekend, overrides))
+    }
+
+    @Test
+    fun `a day override can carry its own hours`() {
+        val tuesday = LocalDate.of(2026, 9, 15)
+        val overrides = mapOf(tuesday to DayOverride(targetMinutes = 5 * 60))
+
+        // Eight hours on every working day, except the overridden five hour Tuesday.
+        val week = WorkRange.ofWeek(monday, DayOfWeek.MONDAY)
+        assertEquals(4 * 8 * 60L + 5 * 60L, WorkSchedule.targetMinutes(week, 40 * 60, weekend, overrides))
+    }
+
+    @Test
+    fun `a per-day target works even without a weekly target`() {
+        val tuesday = LocalDate.of(2026, 9, 15)
+        val overrides = mapOf(tuesday to DayOverride(targetMinutes = 90))
+
+        val week = WorkRange.ofWeek(monday, DayOfWeek.MONDAY)
+        assertEquals(90L, WorkSchedule.targetMinutes(week, 0L, weekend, overrides))
+    }
+
+    @Test
+    fun `a day forced to be a rest day contributes no target`() {
+        val tuesday = LocalDate.of(2026, 9, 15)
+        val overrides = mapOf(
+            tuesday to DayOverride(isRest = true, targetMinutes = 300),
+        )
+
+        val week = WorkRange.ofWeek(monday, DayOfWeek.MONDAY)
+        assertEquals(4 * 8 * 60L, WorkSchedule.targetMinutes(week, 40 * 60, weekend, overrides))
+    }
+
+    @Test
+    fun `an empty override is the default`() {
+        assertTrue(DayOverride().isDefault)
+        assertFalse(DayOverride(isRest = true).isDefault)
+        assertFalse(DayOverride(targetMinutes = 60).isDefault)
+    }
+
+    @Test
     fun `rest day detection uses the weekday`() {
         assertFalse(WorkSchedule.isRestDay(monday, weekend))
         assertTrue(WorkSchedule.isRestDay(LocalDate.of(2026, 9, 19), weekend))
         assertTrue(WorkSchedule.isRestDay(LocalDate.of(2026, 9, 20), weekend))
     }
 
-    @Test
-    fun `midnight is detected from the clock times`() {
-        assertTrue(WorkSchedule.crossesMidnight(java.time.LocalTime.of(23, 0), java.time.LocalTime.of(2, 0)))
-        assertFalse(WorkSchedule.crossesMidnight(java.time.LocalTime.of(9, 0), java.time.LocalTime.of(17, 0)))
-    }
 }

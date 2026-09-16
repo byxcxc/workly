@@ -119,14 +119,3 @@ fun DetailRow(
         Text(text = value, style = MaterialTheme.typography.titleMedium)
     }
 }
-
-/** Shared empty label used when a section has no content. */
-@Composable
-fun InlineEmpty(text: String, modifier: Modifier = Modifier) {
-    Text(
-        text = text,
-        modifier = modifier.padding(horizontal = 20.dp, vertical = 16.dp),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
-}

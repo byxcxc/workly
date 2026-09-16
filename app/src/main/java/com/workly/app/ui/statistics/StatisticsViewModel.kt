@@ -10,6 +10,7 @@ import com.workly.app.data.local.entity.WorkSessionEntity
 import com.workly.app.data.prefs.AppSettings
 import com.workly.app.data.prefs.SettingsRepository
 import com.workly.app.data.repository.WorkRepository
+import com.workly.app.domain.Money
 import com.workly.app.domain.PeriodStats
 import com.workly.app.domain.StatsCalculator
 import com.workly.app.domain.TimeBucket
@@ -48,8 +49,22 @@ data class StatisticsUiState(
     val restDayCount: Int = 0,
     /** Minutes the user aims to work in this period; 0 when no target is set. */
     val targetMinutes: Long = 0L,
+    /**
+     * The custom range can carry its own total-hours figure, typed by the user.
+     * It is a projection: the income below is what that many hours would earn.
+     */
+    val customTargetHoursText: String = "",
+    val customTargetMinutes: Long = 0L,
+    val customTargetIncomeMinor: Long = 0L,
+    val hourlyRateMinor: Long = 0L,
 ) {
     val hasTarget: Boolean get() = targetMinutes > 0L
+
+    /** True once the user typed a usable number of hours for a custom range. */
+    val hasCustomTarget: Boolean
+        get() = option == StatsPeriodOption.CUSTOM && customTargetMinutes > 0L
+
+    val canProjectIncome: Boolean get() = hourlyRateMinor > 0L
 
     val targetProgress: Float get() = WorkSchedule.progress(stats.totalMinutes, targetMinutes)
 
@@ -93,6 +108,9 @@ class StatisticsViewModel(
 
     fun dismissCustomRange() = draft.update { it.copy(isPickingCustomRange = false) }
 
+    /** The custom range's own total hours; the income updates with every keystroke. */
+    fun setCustomTargetHours(text: String) = draft.update { it.copy(customTargetHoursText = text) }
+
     private fun buildState(
         sessions: List<WorkSessionEntity>,
         settings: AppSettings,
@@ -118,19 +136,30 @@ class StatisticsViewModel(
         }
 
         val restDays = settings.restDays
+        val stats = StatsCalculator.summarize(sessions, range, zone)
+        // A projection is only meaningful with a rate: prefer what this period
+        // actually averaged, and fall back to the configured default.
+        val effectiveRate = stats.averageHourlyRateMinor.takeIf { it > 0L }
+            ?: settings.defaultHourlyRateMinor
+        val customMinutes = hoursTextToMinutes(draftState.customTargetHoursText)
         return StatisticsUiState(
+            customTargetHoursText = draftState.customTargetHoursText,
+            customTargetMinutes = customMinutes,
+            customTargetIncomeMinor = Money.incomeMinor(effectiveRate, customMinutes),
+            hourlyRateMinor = effectiveRate,
             isLoading = false,
             restDays = restDays,
-            plannedWorkDays = WorkSchedule.plannedWorkDays(range, restDays),
-            restDayCount = WorkSchedule.plannedRestDays(range, restDays),
+            plannedWorkDays = WorkSchedule.plannedWorkDays(range, restDays, settings.dayOverrides),
+            restDayCount = WorkSchedule.plannedRestDays(range, restDays, settings.dayOverrides),
             targetMinutes = WorkSchedule.targetMinutes(
                 range = range,
                 weeklyTargetMinutes = settings.weeklyTargetMinutes,
                 restDays = restDays,
+                overrides = settings.dayOverrides,
             ),
             option = draftState.option,
             range = range,
-            stats = StatsCalculator.summarize(sessions, range, zone),
+            stats = stats,
             buckets = buckets,
             bucketMode = if (useMonths) BucketMode.MONTH else BucketMode.DAY,
             currency = settings.currency,
@@ -146,7 +175,20 @@ class StatisticsViewModel(
         val customStart: LocalDate? = null,
         val customEnd: LocalDate? = null,
         val isPickingCustomRange: Boolean = false,
+        val customTargetHoursText: String = "",
     )
+
+    /**
+     * `6.5` becomes 390 minutes. Blank or nonsense input simply means "no target".
+     */
+    private fun hoursTextToMinutes(text: String): Long =
+        text.trim()
+            .toBigDecimalOrNull()
+            ?.takeIf { it.signum() >= 0 }
+            ?.multiply(java.math.BigDecimal(60))
+            ?.setScale(0, java.math.RoundingMode.HALF_UP)
+            ?.toLong()
+            ?: 0L
 
     companion object {
         private const val STOP_TIMEOUT_MS = 5_000L

@@ -10,6 +10,7 @@ import com.workly.app.data.local.entity.WorkSessionEntity
 import com.workly.app.data.prefs.AppSettings
 import com.workly.app.data.prefs.SettingsRepository
 import com.workly.app.data.repository.WorkRepository
+import com.workly.app.domain.DayOverride
 import com.workly.app.domain.PeriodStats
 import com.workly.app.domain.StatsCalculator
 import com.workly.app.domain.WorkRange
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -39,6 +41,7 @@ data class RecordsUiState(
     val currency: String = AppSettings().currency,
     val firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
     val restDays: Set<DayOfWeek> = com.workly.app.data.prefs.DEFAULT_REST_DAYS,
+    val dayOverrides: Map<LocalDate, DayOverride> = emptyMap(),
     val totalCount: Int = 0,
     val monthStats: PeriodStats = PeriodStats(WorkRange.ofMonth(YearMonth.now())),
     val dayStats: PeriodStats = PeriodStats(WorkRange.ofDay(LocalDate.now())),
@@ -75,6 +78,11 @@ class RecordsViewModel(
 
     fun selectDate(date: LocalDate?) = draft.update { it.copy(selectedDate = date) }
 
+    /** Long-press a day: set or clear its per-day override. */
+    fun setDayOverride(date: LocalDate, override: DayOverride) {
+        viewModelScope.launch { settingsRepository.setDayOverride(date, override) }
+    }
+
     private fun buildState(
         sessions: List<WorkSessionEntity>,
         settings: AppSettings,
@@ -97,6 +105,7 @@ class RecordsViewModel(
             currency = settings.currency,
             firstDayOfWeek = settings.firstDayOfWeek,
             restDays = settings.restDays,
+            dayOverrides = settings.dayOverrides,
             totalCount = sessions.size,
             monthStats = StatsCalculator.summarize(
                 sessions,

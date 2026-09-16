@@ -13,8 +13,10 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import com.workly.app.domain.DayOverride
 import java.io.IOException
 import java.time.DayOfWeek
+import java.time.LocalDate
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "workly_settings",
@@ -47,6 +49,7 @@ class SettingsRepository(private val context: Context) {
                     ?.toSet()
                     ?: DEFAULT_REST_DAYS,
                 weeklyTargetMinutes = preferences[Keys.WEEKLY_TARGET_MINUTES] ?: 0L,
+                dayOverrides = decodeOverrides(preferences[Keys.DAY_OVERRIDES]),
                 firstDayOfWeek = runCatching {
                     DayOfWeek.valueOf(preferences[Keys.FIRST_DAY_OF_WEEK] ?: DayOfWeek.MONDAY.name)
                 }.getOrDefault(DayOfWeek.MONDAY),
@@ -75,6 +78,15 @@ class SettingsRepository(private val context: Context) {
     suspend fun setWeeklyTargetMinutes(minutes: Long) =
         edit { it[Keys.WEEKLY_TARGET_MINUTES] = minutes.coerceAtLeast(0L) }
 
+    /** Stores an override for one day, removing it when it becomes the default. */
+    suspend fun setDayOverride(date: LocalDate, override: DayOverride) {
+        edit { preferences ->
+            val map = decodeOverrides(preferences[Keys.DAY_OVERRIDES]).toMutableMap()
+            if (override.isDefault) map.remove(date) else map[date] = override
+            preferences[Keys.DAY_OVERRIDES] = encodeOverrides(map)
+        }
+    }
+
     suspend fun setFirstDayOfWeek(day: DayOfWeek) = edit { it[Keys.FIRST_DAY_OF_WEEK] = day.name }
 
     suspend fun setDefaultWorkTypeId(id: Long?) = edit { preferences ->
@@ -90,6 +102,32 @@ class SettingsRepository(private val context: Context) {
         context.settingsDataStore.edit { block(it) }
     }
 
+    /** `epochDay|rest|targetMinutes` per entry, where rest is `1`, `0` or blank. */
+    private fun encodeOverrides(map: Map<LocalDate, DayOverride>): Set<String> =
+        map.entries.map { (date, override) ->
+            val rest = override.isRest?.let { if (it) "1" else "0" } ?: ""
+            "${date.toEpochDay()}|$rest|${override.targetMinutes ?: ""}"
+        }.toSet()
+
+    private fun decodeOverrides(set: Set<String>?): Map<LocalDate, DayOverride> {
+        if (set.isNullOrEmpty()) return emptyMap()
+        val result = HashMap<LocalDate, DayOverride>()
+        set.forEach { entry ->
+            val parts = entry.split('|')
+            if (parts.size != 3) return@forEach
+            val date = runCatching { LocalDate.ofEpochDay(parts[0].toLong()) }.getOrNull() ?: return@forEach
+            val isRest = when (parts[1]) {
+                "1" -> true
+                "0" -> false
+                else -> null
+            }
+            val target = parts[2].toLongOrNull()?.coerceAtLeast(0L)
+            if (isRest == null && target == null) return@forEach
+            result[date] = DayOverride(isRest = isRest, targetMinutes = target)
+        }
+        return result
+    }
+
     private object Keys {
         val DEFAULT_HOURLY_RATE_MINOR = longPreferencesKey("default_hourly_rate_minor")
         val CURRENCY = stringPreferencesKey("currency")
@@ -98,6 +136,7 @@ class SettingsRepository(private val context: Context) {
         val DURATION_STYLE = stringPreferencesKey("duration_style")
         val REST_DAYS = stringSetPreferencesKey("rest_days")
         val WEEKLY_TARGET_MINUTES = longPreferencesKey("weekly_target_minutes")
+        val DAY_OVERRIDES = stringSetPreferencesKey("day_overrides")
         val FIRST_DAY_OF_WEEK = stringPreferencesKey("first_day_of_week")
         val DEFAULT_WORK_TYPE_ID = longPreferencesKey("default_work_type_id")
         val LANGUAGE = stringPreferencesKey("language")

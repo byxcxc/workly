@@ -43,9 +43,6 @@ data class WorkRange(
 
         fun ofYear(year: Int): WorkRange = WorkRange(LocalDate.of(year, 1, 1), LocalDate.of(year + 1, 1, 1))
 
-        fun lastDays(endDate: LocalDate, days: Long): WorkRange =
-            WorkRange(endDate.minusDays(days - 1), endDate.plusDays(1))
-
         /** Custom range from two inclusive dates, tolerating a swapped selection. */
         fun custom(from: LocalDate, toInclusive: LocalDate): WorkRange {
             val (start, end) = if (from.isAfter(toInclusive)) toInclusive to from else from to toInclusive

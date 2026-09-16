@@ -81,14 +81,6 @@ object StatsCalculator {
         range.contains(session.startTime.atZone(zone).toLocalDate())
     }
 
-    fun sessionsOn(
-        sessions: List<WorkSessionEntity>,
-        date: LocalDate,
-        zone: ZoneId,
-    ): List<WorkSessionEntity> = completed(sessions).filter { session ->
-        session.startTime.atZone(zone).toLocalDate() == date
-    }
-
     /** One bucket per day of [range], including days without any work. */
     fun dailyBuckets(
         sessions: List<WorkSessionEntity>,

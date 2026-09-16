@@ -24,30 +24,30 @@
     <string name="action_set">設定</string>
 
     <!-- 挨拶 -->
-    <string name="greeting_morning">☀️ おはようございます</string>
-    <string name="greeting_afternoon">🌤️ こんにちは</string>
-    <string name="greeting_evening">🌙 こんばんは</string>
-    <string name="greeting_night">✨ お疲れさまです</string>
+    <string name="greeting_morning">おはようございます</string>
+    <string name="greeting_afternoon">こんにちは</string>
+    <string name="greeting_evening">こんばんは</string>
+    <string name="greeting_night">お疲れさまです</string>
 
     <!-- ホーム -->
-    <string name="home_worked_today">⏱️ 今日の労働時間</string>
-    <string name="home_earned_today">💰 今日の収入</string>
-    <string name="home_working_now">🔴 作業中</string>
+    <string name="home_worked_today">今日の労働時間</string>
+    <string name="home_earned_today">今日の収入</string>
+    <string name="home_working_now">作業中</string>
     <string name="home_started_at">%1$s に開始</string>
     <string name="home_live_earnings">現在の収入</string>
-    <string name="home_this_week">🗓️ 今週</string>
+    <string name="home_this_week">今週</string>
     <plurals name="home_week_detail">
         <item quantity="other">%1$s · %2$d 件</item>
     </plurals>
-    <string name="home_recent_records">📋 最近の記録</string>
-    <string name="home_start_work">▶️ 作業を開始</string>
-    <string name="home_finish_work">⏹️ 作業を終了</string>
+    <string name="home_recent_records">最近の記録</string>
+    <string name="home_start_work">作業を開始</string>
+    <string name="home_finish_work">作業を終了</string>
     <string name="home_see_all">すべて表示</string>
     <string name="home_choose_work_type">仕事の種類</string>
     <string name="home_none_yet_message">終了した記録がここに表示されます。</string>
 
     <!-- 初回の空の状態 -->
-    <string name="empty_title">👋 ここから始めましょう。</string>
+    <string name="empty_title">ここから始めましょう。</string>
     <string name="empty_message">労働時間と収入をかんたんに記録できます。</string>
     <string name="empty_action">最初の記録を開始</string>
 
@@ -62,7 +62,7 @@
     <string name="records_view_list">リスト</string>
     <string name="records_view_calendar">カレンダー</string>
     <string name="records_add">記録を追加</string>
-    <string name="records_empty_title">🗒️ まだ記録がありません</string>
+    <string name="records_empty_title">まだ記録がありません</string>
     <string name="records_empty_message">終了した記録がここに表示されます。</string>
     <string name="records_detail_title">記録の詳細</string>
     <plurals name="records_session_count">
@@ -88,7 +88,7 @@
     <string name="editor_worked_time">労働時間</string>
     <string name="editor_income">収入</string>
     <string name="editor_save_record">記録を保存</string>
-    <string name="editor_finish_and_save">✅ 終了して保存</string>
+    <string name="editor_finish_and_save">終了して保存</string>
     <string name="editor_discard">セッションを破棄</string>
     <string name="editor_discard_title">このセッションを破棄しますか？</string>
     <string name="editor_discard_message">進行中のセッションは削除され、何も記録されません。</string>
@@ -108,9 +108,9 @@
     <string name="stats_avg_daily_time">稼働日あたりの平均</string>
     <string name="stats_avg_daily_income">稼働日あたりの平均収入</string>
     <string name="stats_avg_hourly_rate">平均時給</string>
-    <string name="stats_income_trend">💰 収入の推移</string>
-    <string name="stats_hours_trend">⏱️ 労働時間の推移</string>
-    <string name="stats_empty_title">📊 まだデータがありません</string>
+    <string name="stats_income_trend">収入の推移</string>
+    <string name="stats_hours_trend">労働時間の推移</string>
+    <string name="stats_empty_title">まだデータがありません</string>
     <string name="stats_empty_message">作業を終了すると、ここに数値が表示されます。</string>
     <string name="stats_range_label">%1$s 〜 %2$s</string>
     <plurals name="stats_session_count">
@@ -138,11 +138,11 @@
     <string name="settings_first_day">週の開始曜日</string>
     <string name="settings_language">言語</string>
     <string name="settings_language_system">システムの既定</string>
-    <string name="settings_export_csv">📤 CSV でエクスポート</string>
+    <string name="settings_export_csv">CSV でエクスポート</string>
     <string name="settings_export_csv_hint">表計算ソフトで開ける形式ですべての記録を書き出します。</string>
-    <string name="settings_export_json">📤 JSON でエクスポート</string>
+    <string name="settings_export_json">JSON でエクスポート</string>
     <string name="settings_export_json_hint">再インポートできる完全なバックアップです。</string>
-    <string name="settings_import_json">📥 JSON からインポート</string>
+    <string name="settings_import_json">JSON からインポート</string>
     <string name="settings_import_json_hint">バックアップを復元します。重複する記録はスキップされます。</string>
     <string name="settings_delete_all">すべてのデータを削除</string>
     <string name="settings_delete_all_hint">この端末のすべての記録と仕事の種類を削除します。</string>
@@ -256,7 +256,7 @@
     <string name="home_add_record">手動で記録</string>
     <string name="home_target_progress">%1$s / %2$s</string>
     <string name="home_target_remaining">あと %1$s</string>
-    <string name="home_target_reached">週の目標を達成しました 🎉</string>
+    <string name="home_target_reached">週の目標を達成しました</string>
     <plurals name="home_week_planned">
         <item quantity="other">稼働日 %1$d / %2$d</item>
     </plurals>
@@ -267,4 +267,14 @@
     <string name="stats_target_progress">%1$s / %2$s</string>
     <string name="cd_calendar_rest_day">%1$s、休み</string>
     <string name="duration_compact_hours">%1$s時間</string>
+    <string name="day_override_title">%1$s をカスタマイズ</string>
+    <string name="day_override_rest">休みの日</string>
+    <string name="day_override_hours">この日の目標時間</string>
+    <string name="day_override_hint">任意。空欄なら週の目標に従います。</string>
+    <string name="day_override_clear">解除</string>
+    <string name="stats_custom_hours">目標時間</string>
+    <string name="stats_custom_income">予想収入</string>
+    <string name="stats_custom_rate_hint">%1$s で計算</string>
+    <string name="stats_custom_need_rate">収入を試算するには設定で時給を指定してください。</string>
+    <string name="duration_unit_hours">時間</string>
 </resources>

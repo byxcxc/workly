@@ -1,7 +1,9 @@
 package com.workly.app.data.prefs
 
 import androidx.compose.runtime.Immutable
+import com.workly.app.domain.DayOverride
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.util.Currency
 import java.util.Locale
 
@@ -98,6 +100,8 @@ data class AppSettings(
     val restDays: Set<DayOfWeek> = DEFAULT_REST_DAYS,
     /** Total hours the user aims to work in a week; 0 means "no target". */
     val weeklyTargetMinutes: Long = 0L,
+    /** Per-day overrides set by long-pressing a date in the calendar. */
+    val dayOverrides: Map<LocalDate, DayOverride> = emptyMap(),
     val defaultWorkTypeId: Long? = null,
     val language: AppLanguage = AppLanguage.SYSTEM,
     /** True once the four starter work types have been created. */

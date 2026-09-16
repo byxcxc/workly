@@ -24,27 +24,27 @@
     <string name="action_set">确定</string>
 
     <!-- 问候语 -->
-    <string name="greeting_morning">☀️ 早上好</string>
-    <string name="greeting_afternoon">🌤️ 下午好</string>
-    <string name="greeting_evening">🌙 晚上好</string>
-    <string name="greeting_night">✨ 辛苦了</string>
+    <string name="greeting_morning">早上好</string>
+    <string name="greeting_afternoon">下午好</string>
+    <string name="greeting_evening">晚上好</string>
+    <string name="greeting_night">辛苦了</string>
 
     <!-- 首页 -->
-    <string name="home_worked_today">⏱️ 今日工时</string>
-    <string name="home_earned_today">💰 今日收入</string>
-    <string name="home_working_now">🔴 正在工作</string>
+    <string name="home_worked_today">今日工时</string>
+    <string name="home_earned_today">今日收入</string>
+    <string name="home_working_now">正在工作</string>
     <string name="home_started_at">%1$s 开始</string>
     <string name="home_live_earnings">当前收入</string>
-    <string name="home_this_week">🗓️ 本周</string>
-    <string name="home_recent_records">📋 最近记录</string>
-    <string name="home_start_work">▶️ 开始工作</string>
-    <string name="home_finish_work">⏹️ 结束工作</string>
+    <string name="home_this_week">本周</string>
+    <string name="home_recent_records">最近记录</string>
+    <string name="home_start_work">开始工作</string>
+    <string name="home_finish_work">结束工作</string>
     <string name="home_see_all">查看全部</string>
     <string name="home_choose_work_type">工作类型</string>
     <string name="home_none_yet_message">完成的记录会显示在这里。</string>
 
     <!-- 初次使用的空状态 -->
-    <string name="empty_title">👋 从这里开始。</string>
+    <string name="empty_title">从这里开始。</string>
     <string name="empty_message">轻松记录你的工时与收入。</string>
     <string name="empty_action">开始第一次记录</string>
 
@@ -59,7 +59,7 @@
     <string name="records_view_list">列表</string>
     <string name="records_view_calendar">日历</string>
     <string name="records_add">添加记录</string>
-    <string name="records_empty_title">🗒️ 还没有记录</string>
+    <string name="records_empty_title">还没有记录</string>
     <string name="records_empty_message">完成的记录会显示在这里。</string>
     <string name="records_detail_title">记录详情</string>
     <string name="records_no_work_on_day">这一天没有记录。</string>
@@ -79,7 +79,7 @@
     <string name="editor_worked_time">工作时长</string>
     <string name="editor_income">收入</string>
     <string name="editor_save_record">保存记录</string>
-    <string name="editor_finish_and_save">✅ 结束并保存</string>
+    <string name="editor_finish_and_save">结束并保存</string>
     <string name="editor_discard">放弃本次记录</string>
     <string name="editor_discard_title">放弃这次记录？</string>
     <string name="editor_discard_message">正在进行的记录将被删除，不会保存任何内容。</string>
@@ -99,9 +99,9 @@
     <string name="stats_avg_daily_time">日均工时</string>
     <string name="stats_avg_daily_income">日均收入</string>
     <string name="stats_avg_hourly_rate">平均时薪</string>
-    <string name="stats_income_trend">💰 收入趋势</string>
-    <string name="stats_hours_trend">⏱️ 工时趋势</string>
-    <string name="stats_empty_title">📊 暂无数据</string>
+    <string name="stats_income_trend">收入趋势</string>
+    <string name="stats_hours_trend">工时趋势</string>
+    <string name="stats_empty_title">暂无数据</string>
     <string name="stats_empty_message">完成一次记录后，这里会显示统计数据。</string>
     <string name="chart_no_data">此期间暂无数据</string>
     <string name="stats_range_label">%1$s 至 %2$s</string>
@@ -123,11 +123,11 @@
     <string name="settings_first_day">每周起始日</string>
     <string name="settings_language">语言</string>
     <string name="settings_language_system">跟随系统</string>
-    <string name="settings_export_csv">📤 导出为 CSV</string>
+    <string name="settings_export_csv">导出为 CSV</string>
     <string name="settings_export_csv_hint">可以用表格软件打开的完整记录。</string>
-    <string name="settings_export_json">📤 导出为 JSON</string>
+    <string name="settings_export_json">导出为 JSON</string>
     <string name="settings_export_json_hint">可以再次导入的完整备份。</string>
-    <string name="settings_import_json">📥 从 JSON 导入</string>
+    <string name="settings_import_json">从 JSON 导入</string>
     <string name="settings_import_json_hint">恢复备份，重复的记录会被跳过。</string>
     <string name="settings_delete_all">删除所有数据</string>
     <string name="settings_delete_all_hint">删除这台设备上的全部记录和工作类型。</string>
@@ -258,7 +258,7 @@
     <string name="home_add_record">直接记录工时</string>
     <string name="home_target_progress">%1$s / %2$s</string>
     <string name="home_target_remaining">还剩 %1$s</string>
-    <string name="home_target_reached">已达成每周目标 🎉</string>
+    <string name="home_target_reached">已达成每周目标</string>
     <plurals name="home_week_planned">
         <item quantity="other">工作日 %1$d / %2$d</item>
     </plurals>
@@ -269,4 +269,14 @@
     <string name="stats_target_progress">%1$s / %2$s</string>
     <string name="cd_calendar_rest_day">%1$s，休息日</string>
     <string name="duration_compact_hours">%1$s小时</string>
+    <string name="day_override_title">自定义 %1$s</string>
+    <string name="day_override_rest">休息日</string>
+    <string name="day_override_hours">当天目标工时</string>
+    <string name="day_override_hint">可选。留空则按每周目标。</string>
+    <string name="day_override_clear">清除</string>
+    <string name="stats_custom_hours">目标工时</string>
+    <string name="stats_custom_income">预计收入</string>
+    <string name="stats_custom_rate_hint">按 %1$s 计算</string>
+    <string name="stats_custom_need_rate">请先在设置中设置时薪以估算收入。</string>
+    <string name="duration_unit_hours">小时</string>
 </resources>

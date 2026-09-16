@@ -1,7 +1,11 @@
 package com.workly.app.ui.records
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,24 +19,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,7 +54,9 @@ import com.workly.app.data.local.entity.WorkSessionEntity
 import com.workly.app.data.local.entity.incomeMinor
 import com.workly.app.data.local.entity.workedMinutes
 import com.workly.app.domain.CalendarGrid
+import com.workly.app.domain.DayOverride
 import com.workly.app.domain.PeriodStats
+import com.workly.app.domain.WorkSchedule
 import com.workly.app.ui.components.AddIcon
 import com.workly.app.ui.components.BackIcon
 import com.workly.app.ui.components.CalendarIcon
@@ -52,6 +67,7 @@ import com.workly.app.ui.components.ScreenHeader
 import com.workly.app.ui.components.SessionRow
 import com.workly.app.ui.components.WorklyCard
 import com.workly.app.ui.theme.WorklyTheme
+import com.workly.app.ui.util.decimalHours
 import com.workly.app.ui.util.formatDateMedium
 import com.workly.app.ui.util.formatDuration
 import com.workly.app.ui.util.formatMoney
@@ -73,6 +89,7 @@ fun RecordsScreen(
     viewModel: RecordsViewModel = viewModel(factory = RecordsViewModel.Factory),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    var overrideDate by remember { mutableStateOf<LocalDate?>(null) }
 
     Column(modifier = modifier.fillMaxSize()) {
         ScreenHeader(
@@ -116,11 +133,107 @@ fun RecordsScreen(
                     onPreviousMonth = viewModel::showPreviousMonth,
                     onNextMonth = viewModel::showNextMonth,
                     onSelectDate = viewModel::selectDate,
+                    onLongPressDate = { overrideDate = it },
                     onOpenRecord = onOpenRecord,
                 )
             }
         }
     }
+
+    overrideDate?.let { date ->
+        DayOverrideDialog(
+            date = date,
+            existing = state.dayOverrides[date],
+            weekdayIsRest = date.dayOfWeek in state.restDays,
+            onSave = { override ->
+                viewModel.setDayOverride(date, override)
+                overrideDate = null
+            },
+            onClear = {
+                viewModel.setDayOverride(date, DayOverride())
+                overrideDate = null
+            },
+            onDismiss = { overrideDate = null },
+        )
+    }
+}
+
+/** Long-press a date to force a rest day or give that day its own hours target. */
+@Composable
+private fun DayOverrideDialog(
+    date: LocalDate,
+    existing: DayOverride?,
+    weekdayIsRest: Boolean,
+    onSave: (DayOverride) -> Unit,
+    onClear: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    // The switch starts at the day's effective value, so the user only changes
+    // what they actually want to change.
+    var rest by remember(date, existing) {
+        mutableStateOf(existing?.isRest ?: weekdayIsRest)
+    }
+    var hoursText by remember(date, existing) {
+        mutableStateOf(existing?.targetMinutes?.let { decimalHours(it) }.orEmpty())
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.day_override_title, formatDateMedium(date))) },
+        text = {
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .toggleable(
+                            value = rest,
+                            role = Role.Checkbox,
+                            onValueChange = { rest = it },
+                        )
+                        .padding(vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Checkbox(checked = rest, onCheckedChange = null)
+                    Spacer(Modifier.size(8.dp))
+                    Text(stringResource(R.string.day_override_rest), style = MaterialTheme.typography.bodyLarge)
+                }
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = hoursText,
+                    onValueChange = { hoursText = it },
+                    label = { Text(stringResource(R.string.day_override_hours)) },
+                    supportingText = { Text(stringResource(R.string.day_override_hint)) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    // Only store fields that actually differ from the default, so a
+                    // day goes back to "normal" as soon as its values match again.
+                    val isRestOverride = if (rest == weekdayIsRest) null else rest
+                    val target = hoursText.trim().toBigDecimalOrNull()
+                        ?.multiply(java.math.BigDecimal(60))
+                        ?.setScale(0, java.math.RoundingMode.HALF_UP)
+                        ?.toLong()
+                    onSave(DayOverride(isRest = isRestOverride, targetMinutes = target))
+                },
+            ) { Text(stringResource(R.string.action_save)) }
+        },
+        dismissButton = {
+            Row {
+                if (existing?.isDefault == false) {
+                    TextButton(onClick = onClear) {
+                        Text(stringResource(R.string.day_override_clear), color = MaterialTheme.colorScheme.error)
+                    }
+                }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+            }
+        },
+    )
 }
 
 @Composable
@@ -221,6 +334,7 @@ private fun CalendarPanel(
     onPreviousMonth: () -> Unit,
     onNextMonth: () -> Unit,
     onSelectDate: (LocalDate) -> Unit,
+    onLongPressDate: (LocalDate) -> Unit,
     onOpenRecord: (Long) -> Unit,
 ) {
     LazyColumn(contentPadding = PaddingValues(bottom = 96.dp)) {
@@ -240,8 +354,10 @@ private fun CalendarPanel(
                 firstDayOfWeek = state.firstDayOfWeek,
                 datesWithWork = state.datesWithWork,
                 restDays = state.restDays,
+                dayOverrides = state.dayOverrides,
                 selectedDate = state.selectedDate,
                 onSelectDate = onSelectDate,
+                onLongPressDate = onLongPressDate,
             )
         }
         val selected = state.selectedDate
@@ -338,8 +454,10 @@ private fun MonthGrid(
     firstDayOfWeek: java.time.DayOfWeek,
     datesWithWork: Set<LocalDate>,
     restDays: Set<java.time.DayOfWeek>,
+    dayOverrides: Map<LocalDate, DayOverride>,
     selectedDate: LocalDate?,
     onSelectDate: (LocalDate) -> Unit,
+    onLongPressDate: (LocalDate) -> Unit,
 ) {
     val locale = rememberAppLocale()
     val weekdayNames = formatWeekdayNarrow(locale)
@@ -366,10 +484,12 @@ private fun MonthGrid(
                     DayCell(
                         date = date,
                         hasWork = date != null && date in datesWithWork,
-                        isRestDay = date != null && date.dayOfWeek in restDays,
+                        isRestDay = date != null && WorkSchedule.isRestDay(date, restDays, dayOverrides),
+                        hasOverride = date != null && dayOverrides[date]?.let { !it.isDefault } == true,
                         isSelected = date != null && date == selectedDate,
                         isToday = date == LocalDate.now(),
                         onSelect = { date?.let(onSelectDate) },
+                        onLongPress = { date?.let(onLongPressDate) },
                         modifier = Modifier.weight(1f),
                     )
                 }
@@ -383,9 +503,11 @@ private fun DayCell(
     date: LocalDate?,
     hasWork: Boolean,
     isRestDay: Boolean,
+    hasOverride: Boolean,
     isSelected: Boolean,
     isToday: Boolean,
     onSelect: () -> Unit,
+    onLongPress: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (date == null) {
@@ -422,7 +544,14 @@ private fun DayCell(
                 .size(44.dp)
                 .clip(CircleShape)
                 .background(background)
-                .clickable(onClick = onSelect)
+                .combinedClickable(onClick = onSelect, onLongClick = onLongPress)
+                .then(
+                    if (hasOverride) {
+                        Modifier.border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                    } else {
+                        Modifier
+                    },
+                )
                 .semantics { contentDescription = description },
             contentAlignment = Alignment.Center,
         ) {

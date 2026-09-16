@@ -171,8 +171,13 @@ class HomeViewModel(
                 range = weekRange,
                 weeklyTargetMinutes = settings.weeklyTargetMinutes,
                 restDays = settings.restDays,
+                overrides = settings.dayOverrides,
             ),
-            weekPlannedDays = WorkSchedule.plannedWorkDays(weekRange, settings.restDays),
+            weekPlannedDays = WorkSchedule.plannedWorkDays(
+                weekRange,
+                settings.restDays,
+                settings.dayOverrides,
+            ),
             weekTotalDays = weekRange.dayCount.toInt(),
         )
     }

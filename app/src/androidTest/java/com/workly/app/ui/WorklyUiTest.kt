@@ -1,6 +1,9 @@
 package com.workly.app.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.longClick
+import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -15,11 +18,17 @@ import com.workly.app.AppGraph
 import com.workly.app.MainActivity
 import com.workly.app.R
 import com.workly.app.data.prefs.ThemeMode
+import com.workly.app.domain.DayOverride
+import kotlinx.coroutines.flow.first
 import com.workly.app.ui.components.CONFIRM_BUTTON_TAG
 import com.workly.app.ui.navigation.Routes
 import com.workly.app.ui.records.NOTE_FIELD_TAG
 import kotlinx.coroutines.runBlocking
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,6 +65,9 @@ class WorklyUiTest {
             AppGraph.settingsRepository.setCurrency("JPY")
             AppGraph.settingsRepository.setDefaultHourlyRateMinor(100_000L)
             AppGraph.settingsRepository.setThemeMode(ThemeMode.LIGHT)
+            AppGraph.settingsRepository.settings.first().dayOverrides.keys.forEach { date ->
+                AppGraph.settingsRepository.setDayOverride(date, DayOverride())
+            }
         }
         rule.waitForIdle()
     }
@@ -155,6 +167,32 @@ class WorklyUiTest {
 
         openTab(Routes.HOME)
         awaitText(text(R.string.empty_title))
+    }
+
+    @Test
+    fun longPressingACalendarDayOpensTheDayEditor() {
+        openTab(Routes.RECORDS)
+        awaitText(text(R.string.records_empty_title))
+        clickText(text(R.string.records_view_calendar), scroll = true)
+
+        // Today's cell is found by its accessibility label, which is the date.
+        val today = LocalDate.now()
+        val locale = rule.activity.resources.configuration.locales[0]
+        val label = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+            .withLocale(locale)
+            .format(today)
+
+        rule.onNode(hasContentDescription(label, substring = true))
+            .performTouchInput { longClick() }
+
+        awaitText(text(R.string.day_override_rest))
+        rule.onNodeWithText(text(R.string.day_override_rest)).performClick()
+        clickText(text(R.string.action_save))
+
+        val stored = runBlocking { AppGraph.settingsRepository.settings.first() }.dayOverrides[today]
+        // The weekly pattern for today is untouched, so the override follows it
+        // unless the day was already a rest day.
+        assertNotNull(stored)
     }
 
     @Test

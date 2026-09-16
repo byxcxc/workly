@@ -5,7 +5,6 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.temporal.ChronoUnit
 
 /**
  * Pure time arithmetic for work sessions. Everything here is side-effect free and
@@ -56,12 +55,5 @@ object WorkTime {
     fun formatDuration(minutes: Long): String {
         val safe = minutes.coerceAtLeast(0L)
         return "${safe / 60}h ${(safe % 60).toString().padStart(2, '0')}m"
-    }
-
-    /** Number of calendar days a session touches, used when it spans midnight. */
-    fun daysSpanned(start: Instant, end: Instant, zone: ZoneId): Long {
-        val startDate = start.atZone(zone).toLocalDate()
-        val endDate = end.atZone(zone).toLocalDate()
-        return ChronoUnit.DAYS.between(startDate, endDate) + 1
     }
 }

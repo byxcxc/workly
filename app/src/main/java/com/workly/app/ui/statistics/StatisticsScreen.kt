@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DatePicker
@@ -17,6 +18,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -49,6 +52,7 @@ import com.workly.app.ui.util.formatDuration
 import com.workly.app.ui.util.decimalHours
 import com.workly.app.ui.util.formatMoney
 import com.workly.app.ui.util.formatMoneyCompact
+import com.workly.app.ui.util.formatRate
 import com.workly.app.ui.util.formatMonthShort
 import com.workly.app.ui.util.formatRate
 import com.workly.app.ui.util.formatWeekdayShort
@@ -129,6 +133,17 @@ fun StatisticsScreen(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+
+            if (state.option == StatsPeriodOption.CUSTOM) {
+                Spacer(Modifier.height(16.dp))
+                CustomTargetCard(
+                    hoursText = state.customTargetHoursText,
+                    onHoursChange = viewModel::setCustomTargetHours,
+                    incomeMinor = state.customTargetIncomeMinor,
+                    rateMinor = state.hourlyRateMinor,
+                    currency = state.currency,
+                )
+            }
 
             Spacer(Modifier.height(16.dp))
             MetricsCard(
@@ -276,6 +291,58 @@ private fun MetricsCard(
                 modifier = Modifier.weight(1f),
             )
         }
+    }
+}
+
+/**
+ * The custom range's own total hours, with the income that those hours would
+ * earn. Typing updates both numbers as you go.
+ */
+@Composable
+private fun CustomTargetCard(
+    hoursText: String,
+    onHoursChange: (String) -> Unit,
+    incomeMinor: Long,
+    rateMinor: Long,
+    currency: String,
+) {
+    WorklyCard(modifier = Modifier.fillMaxWidth()) {
+        SectionLabel(stringResource(R.string.stats_custom_hours))
+        Spacer(Modifier.height(10.dp))
+        OutlinedTextField(
+            value = hoursText,
+            onValueChange = onHoursChange,
+            placeholder = { Text("6.5") },
+            suffix = { Text(stringResource(R.string.duration_unit_hours)) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(Modifier.height(16.dp))
+        SectionLabel(stringResource(R.string.stats_custom_income))
+        Text(
+            text = if (rateMinor > 0L) {
+                formatMoney(incomeMinor, currency)
+            } else {
+                stringResource(R.string.settings_not_set)
+            },
+            style = MaterialTheme.typography.displaySmall,
+            color = WorklyTheme.accents.income,
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = if (rateMinor > 0L) {
+                stringResource(
+                    R.string.stats_custom_rate_hint,
+                    formatRate(rateMinor, currency),
+                )
+            } else {
+                stringResource(R.string.stats_custom_need_rate)
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
