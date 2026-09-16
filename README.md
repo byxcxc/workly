@@ -216,6 +216,9 @@ commented template at the bottom of `.github/workflows/android.yml`.
 ./gradlew connectedDebugAndroidTest # instrumented tests (device or emulator)
 ```
 
+The JVM suite is 68 tests and the instrumented suite is 37 tests, and both are
+green in CI.
+
 **JVM unit tests** (`app/src/test/`) cover the rules that are easy to get wrong:
 
 - time arithmetic, including `23:00 → 02:00 = 3h` and a full 24 hour shift
@@ -229,7 +232,7 @@ commented template at the bottom of `.github/workflows/android.yml`.
 - JSON backup round-trip, unknown fields, malformed input, version refusal
 
 **Instrumented tests** (`app/src/androidTest/`) run against a real Room database
-and the real UI:
+and the real UI on an emulator:
 
 - DAO and schema behaviour (converters, unique indexes, foreign key `SET_NULL`)
 - repository rules: start, finish, discard, edit, delete, import de-duplication
