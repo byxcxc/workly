@@ -2,6 +2,8 @@
 
 **English** | [中文](README.zh-CN.md)
 
+**Website:** <https://byxcxc.github.io/workly/> · **Source:** <https://github.com/byxcxc/workly>
+
 [![Android CI](https://github.com/byxcxc/workly/actions/workflows/android.yml/badge.svg)](https://github.com/byxcxc/workly/actions/workflows/android.yml)
 
 **Personal work hours and earnings tracker.**
@@ -312,6 +314,23 @@ the repository.
 - [ ] Optional encrypted cloud sync — still no account required for the core app
 
 ---
+
+## Website
+
+The project page in `docs/` is published with GitHub Pages:
+
+<https://byxcxc.github.io/workly/>
+
+It is a single static page (no build step): `docs/index.html`, `docs/assets/style.css`
+and `docs/assets/app.js`. Copy lives in a small dictionary in `app.js` so the page
+switches between English, 中文 and 日本語 the same way the app does.
+
+To preview it locally:
+
+```bash
+python3 -m http.server 8000 --directory docs
+# then open http://localhost:8000
+```
 
 ## Repository
 

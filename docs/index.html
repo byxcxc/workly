@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workly — Personal work hours and earnings tracker</title>
+<meta name="description" content="Workly is a quiet, offline Android app for tracking hourly work and earnings. No account, no cloud, no ads.">
+<meta name="theme-color" content="#4A5A9E" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101114" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://byxcxc.github.io/workly/">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Workly — Personal work hours and earnings tracker">
+<meta property="og:description" content="A quiet, offline Android app for tracking hourly work and earnings. No account, no cloud, no ads.">
+<meta property="og:url" content="https://byxcxc.github.io/workly/">
+<meta property="og:image" content="https://byxcxc.github.io/workly/assets/icon.svg">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body id="top">
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="Workly">
+      <img src="assets/icon.svg" alt="" width="28" height="28">
+      <span>Workly</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#features" data-i18n="nav.features">Features</a>
+      <a href="#screens" data-i18n="nav.screens">Screens</a>
+      <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
+      <a href="#tech" data-i18n="nav.tech">Tech</a>
+      <a href="#download" data-i18n="nav.download">Download</a>
+    </nav>
+
+    <div class="nav-actions">
+      <select id="lang" class="chip chip-select" data-i18n-aria="nav.langAria" aria-label="Language">
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+        <option value="ja">日本語</option>
+      </select>
+      <button id="theme" class="chip chip-icon" type="button" data-i18n-aria="nav.themeAria" aria-label="Switch theme">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg>
+      </button>
+      <a class="btn btn-ghost btn-sm" href="https://github.com/byxcxc/workly" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ---------------------------------------------------------------- hero -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy reveal">
+        <p class="eyebrow" data-i18n="hero.eyebrow">Offline · No account · No ads</p>
+        <h1 data-i18n="hero.title">Your work hours, quietly kept.</h1>
+        <p class="lede" data-i18n="hero.lede">
+          Workly is a personal work hours and earnings tracker for people paid by
+          the hour. Tap start, get on with your day, tap finish — the app works out
+          the rest.
+        </p>
+
+        <div class="cta">
+          <a class="btn btn-primary" href="#download" data-i18n="hero.ctaPrimary">Get the app</a>
+          <a class="btn btn-ghost" href="https://github.com/byxcxc/workly" target="_blank" rel="noopener" data-i18n="hero.ctaSecondary">View source</a>
+        </div>
+
+        <ul class="hero-stats">
+          <li><strong data-i18n="hero.stat1Value">0</strong><span data-i18n="hero.stat1Label">permissions requested</span></li>
+          <li><strong data-i18n="hero.stat2Value">3</strong><span data-i18n="hero.stat2Label">languages</span></li>
+          <li><strong data-i18n="hero.stat3Value">100%</strong><span data-i18n="hero.stat3Label">offline</span></li>
+        </ul>
+      </div>
+
+      <div class="hero-phone reveal">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="mock-head">
+              <p class="mock-greeting" data-i18n="mock.greeting">Good evening</p>
+              <p class="mock-date" data-i18n="mock.date">Wednesday, September 16</p>
+            </div>
+            <div class="mock-card mock-card-brand">
+              <p class="mock-label" data-i18n="mock.workingNow">WORKING NOW</p>
+              <p class="mock-big mock-live">02:34:12</p>
+              <p class="mock-sub" data-i18n="mock.started">Started at 18:26</p>
+              <p class="mock-label" data-i18n="mock.earnings">EARNINGS SO FAR</p>
+              <p class="mock-mid mock-money">¥4,120</p>
+            </div>
+            <div class="mock-button" data-i18n="mock.finish">Finish work</div>
+            <div class="mock-card">
+              <p class="mock-label" data-i18n="mock.thisWeek">THIS WEEK</p>
+              <div class="mock-row">
+                <div>
+                  <p class="mock-tiny" data-i18n="mock.worked">Worked</p>
+                  <p class="mock-mid">32h 18m</p>
+                </div>
+                <div>
+                  <p class="mock-tiny" data-i18n="mock.income">Income</p>
+                  <p class="mock-mid mock-money">¥56,800</p>
+                </div>
+              </div>
+              <div class="mock-progress"><span style="width:81%"></span></div>
+              <p class="mock-tiny" data-i18n="mock.target">32h 18m of 40h</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------ features -->
+  <section id="features" class="section">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <h2 data-i18n="features.title">Everything a private time tracker needs</h2>
+        <p data-i18n="features.lede">And nothing it does not. No feeds, no social, no upsell.</p>
+      </header>
+
+      <div class="grid grid-3">
+        <article class="card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M8 4.8 19.5 12 8 19.2Z"/></svg></div>
+          <h3 data-i18n="features.f1Title">One tap to start</h3>
+          <p data-i18n="features.f1Body">The running session is written to the database immediately, so closing the app, locking the screen or a reboot never loses it.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M4.8 12.6 9.8 17.6 19.2 6.6"/></svg></div>
+          <h3 data-i18n="features.f2Title">Finish with a summary</h3>
+          <p data-i18n="features.f2Body">Confirm the end time, break, rate, work type and note before saving. Everything is editable in one screen.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M5.2 20v-6.5M12 20V8.5M18.8 20v-15.5"/></svg></div>
+          <h3 data-i18n="features.f3Title">Charts that state numbers</h3>
+          <p data-i18n="features.f3Body">Values are drawn on the bars and every data point is also listed underneath, so a month of work is readable at a glance.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v3.5M16 3v3.5"/></svg></div>
+          <h3 data-i18n="features.f4Title">Calendar with day controls</h3>
+          <p data-i18n="features.f4Body">Long-press any day to record hours for it, mark it as a rest day, or give it its own target. Every choice is remembered.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <h3 data-i18n="features.f5Title">Your own background</h3>
+          <p data-i18n="features.f5Body">Pick a colour or your own picture, blur it from 0% to 100%, and let the app take its accent from the image.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 12h16M4 7.5h16M4 16.5h16"/><circle cx="9" cy="7.5" r="2"/><circle cx="15" cy="16.5" r="2"/></svg></div>
+          <h3 data-i18n="features.f6Title">Schedule and targets</h3>
+          <p data-i18n="features.f6Body">Set a weekly hours target and your rest days; the dashboard and statistics show progress against them.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3.5v13M7 12l5 5 5-5M4 20h16"/></svg></div>
+          <h3 data-i18n="features.f7Title">Your data, portable</h3>
+          <p data-i18n="features.f7Body">Export CSV for a spreadsheet or a full JSON backup, and import it back with automatic duplicate detection.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.8 5.4 3.8 8.5s-1.3 5.9-3.8 8.5c-2.5-2.6-3.8-5.4-3.8-8.5S9.5 6.1 12 3.5Z"/></svg></div>
+          <h3 data-i18n="features.f8Title">English, 日本語, 中文</h3>
+          <p data-i18n="features.f8Body">Switch language inside the app, or from the system "App language" screen on Android 13 and newer.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- screens -->
+  <section id="screens" class="section alt">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <h2 data-i18n="screens.title">Designed to be read in three seconds</h2>
+        <p data-i18n="screens.lede">Big numbers, generous space, and colour used only where it means something.</p>
+      </header>
+
+      <div class="screens">
+        <figure class="phone phone-sm reveal">
+          <div class="phone-screen">
+            <p class="mock-greeting" data-i18n="mock.greeting">Good evening</p>
+            <p class="mock-date" data-i18n="mock.date">Wednesday, September 16</p>
+            <div class="mock-card">
+              <p class="mock-label" data-i18n="mock.workedToday">WORKED TODAY</p>
+              <p class="mock-big">07h 32m</p>
+              <p class="mock-label" data-i18n="mock.earnedToday">EARNED TODAY</p>
+              <p class="mock-mid mock-money">¥12,480</p>
+            </div>
+            <div class="mock-button" data-i18n="mock.start">Start work</div>
+            <p class="mock-tiny mock-link" data-i18n="mock.logManually">Log time manually</p>
+          </div>
+          <figcaption data-i18n="screens.home">Home</figcaption>
+        </figure>
+
+        <figure class="phone phone-sm reveal">
+          <div class="phone-screen">
+            <p class="mock-title" data-i18n="mock.records">Records</p>
+            <p class="mock-tiny" data-i18n="mock.sep16">September 16 · 8h 00m · ¥12,800</p>
+            <div class="mock-row-item"><span>09:00 – 18:00</span><strong>8h 00m</strong></div>
+            <p class="mock-tiny" data-i18n="mock.sep15">September 15 · 6h 30m · ¥10,400</p>
+            <div class="mock-row-item"><span>10:00 – 17:00</span><strong>6h 30m</strong></div>
+            <p class="mock-tiny" data-i18n="mock.sep14">September 14 · 4h 00m · ¥6,400</p>
+            <div class="mock-row-item"><span>13:00 – 17:00</span><strong>4h 00m</strong></div>
+          </div>
+          <figcaption data-i18n="screens.records">Records</figcaption>
+        </figure>
+
+        <figure class="phone phone-sm reveal">
+          <div class="phone-screen">
+            <p class="mock-title" data-i18n="mock.statistics">Statistics</p>
+            <div class="mock-card">
+              <p class="mock-label" data-i18n="mock.totalTime">TOTAL WORK TIME</p>
+              <p class="mock-mid">32h 18m</p>
+              <p class="mock-label" data-i18n="mock.totalIncome">TOTAL INCOME</p>
+              <p class="mock-mid mock-money">¥56,800</p>
+            </div>
+            <div class="mock-chart">
+              <span style="height:38%"></span><span style="height:62%"></span><span style="height:50%"></span>
+              <span style="height:78%"></span><span style="height:44%"></span><span style="height:90%"></span>
+              <span style="height:30%"></span>
+            </div>
+            <p class="mock-tiny mock-link" data-i18n="mock.chartHint">Mon 4h · Tue 6.5h · Wed 5h · Thu 8h…</p>
+          </div>
+          <figcaption data-i18n="screens.statistics">Statistics</figcaption>
+        </figure>
+      </div>
+
+      <p class="note reveal" data-i18n="screens.note">
+        These previews are HTML recreations of the app's real layout. Render the
+        @Preview composables in the repository for device screenshots.
+      </p>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- privacy -->
+  <section id="privacy" class="section">
+    <div class="wrap privacy-grid">
+      <div class="reveal">
+        <h2 data-i18n="privacy.title">Nothing leaves your phone</h2>
+        <p class="lede" data-i18n="privacy.lede">
+          Workly asks for no permissions at all. There is no internet permission in
+          the manifest, which means the app is technically incapable of sending your
+          data anywhere.
+        </p>
+        <ul class="ticks">
+          <li data-i18n="privacy.t1">No account, no sign-in, no email</li>
+          <li data-i18n="privacy.t2">No cloud sync and no server of any kind</li>
+          <li data-i18n="privacy.t3">No ads, no analytics, no trackers</li>
+          <li data-i18n="privacy.t4">Backups are plain files you choose where to save</li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <pre class="code"><code>&lt;manifest&gt;
+  <span class="c-dim">&lt;!-- no permissions --&gt;</span>
+&lt;/manifest&gt;</code></pre>
+        <p class="note" data-i18n="privacy.codeNote">From the app's AndroidManifest.xml</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- tech -->
+  <section id="tech" class="section alt">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <h2 data-i18n="tech.title">Built with modern Android</h2>
+        <p data-i18n="tech.lede">A single small module, readable by someone still learning.</p>
+      </header>
+      <div class="tags reveal">
+        <span>Kotlin</span><span>Jetpack Compose</span><span>Material 3</span><span>Room</span>
+        <span>DataStore</span><span>Coroutines</span><span>Flow</span>
+        <span>Navigation Compose</span><span>kotlinx.serialization</span>
+        <span>Gradle 9.7</span><span>AGP 9.4</span><span>minSdk 26 · targetSdk 37</span>
+      </div>
+      <div class="quality reveal">
+        <div><strong>90</strong><span data-i18n="tech.q1">JVM unit tests</span></div>
+        <div><strong>40</strong><span data-i18n="tech.q2">instrumented tests</span></div>
+        <div><strong>0</strong><span data-i18n="tech.q3">lint errors</span></div>
+        <div><strong>2</strong><span data-i18n="tech.q4">CI workflows</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------ download -->
+  <section id="download" class="section">
+    <div class="wrap download reveal">
+      <h2 data-i18n="download.title">Get Workly</h2>
+      <p class="lede" data-i18n="download.lede">
+        Workly is free and open source under the MIT licence. Build it yourself, or
+        grab the debug APK from the latest CI run.
+      </p>
+      <div class="cta center">
+        <a class="btn btn-primary" href="https://github.com/byxcxc/workly/actions/workflows/android.yml" target="_blank" rel="noopener" data-i18n="download.apk">Download the APK</a>
+        <a class="btn btn-ghost" href="https://github.com/byxcxc/workly" target="_blank" rel="noopener" data-i18n="download.repo">Browse the repository</a>
+      </div>
+      <pre class="code code-wide"><code><span class="c-dim"># build from source</span>
+git clone https://github.com/byxcxc/workly.git
+cd workly
+./gradlew assembleDebug</code></pre>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="brand">
+      <img src="assets/icon.svg" alt="" width="24" height="24">
+      <span>Workly</span>
+    </div>
+    <nav class="footer-links">
+      <a href="https://github.com/byxcxc/workly" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/byxcxc/workly/blob/main/README.md" target="_blank" rel="noopener" data-i18n="footer.readme">README</a>
+      <a href="https://github.com/byxcxc/workly/blob/main/README.zh-CN.md" target="_blank" rel="noopener" data-i18n="footer.readmeZh">中文说明</a>
+      <a href="https://github.com/byxcxc/workly/blob/main/LICENSE" target="_blank" rel="noopener" data-i18n="footer.license">MIT License</a>
+    </nav>
+    <p class="note" data-i18n="footer.note">Made with Kotlin and Jetpack Compose.</p>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

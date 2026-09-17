@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108" role="img" aria-label="Workly">
+  <defs>
+    <linearGradient id="worklyBrand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4C5CA8"/>
+      <stop offset="1" stop-color="#2C3466"/>
+    </linearGradient>
+  </defs>
+  <rect width="108" height="108" rx="24" fill="url(#worklyBrand)"/>
+  <path d="M36 40 L44.5 68 L54 50 L63.5 68 L72 40"
+        fill="none" stroke="#FFFFFF" stroke-width="6.5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

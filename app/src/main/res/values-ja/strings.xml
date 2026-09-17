@@ -295,4 +295,6 @@
     <string name="about_source">ソースコード</string>
     <string name="about_github_hint">GitHub でプロジェクトを開く</string>
     <string name="about_version">バージョン %1$s</string>
+    <string name="about_website">公式サイト</string>
+    <string name="about_website_hint">プロジェクトページを開く</string>
 </resources>

@@ -2,6 +2,8 @@
 
 [English](README.md) | **中文**
 
+**官网：** <https://byxcxc.github.io/workly/> · **源码：** <https://github.com/byxcxc/workly>
+
 [![Android CI](https://github.com/byxcxc/workly/actions/workflows/android.yml/badge.svg)](https://github.com/byxcxc/workly/actions/workflows/android.yml)
 
 **个人工时与收入记录工具。**
@@ -274,6 +276,23 @@ JVM 单测 90 个、仪器化测试 40 个，CI 上全部通过。
 - [ ] 可选的加密云同步——核心功能依然不需要账号
 
 ---
+
+## 官网
+
+`docs/` 里的项目主页通过 GitHub Pages 发布：
+
+<https://byxcxc.github.io/workly/>
+
+它是一个纯静态页面（无需构建）：`docs/index.html`、`docs/assets/style.css`、
+`docs/assets/app.js`。文案放在 `app.js` 里的小字典中，因此页面可以像应用一样在
+英文 / 中文 / 日文之间切换。
+
+本地预览：
+
+```bash
+python3 -m http.server 8000 --directory docs
+# 然后打开 http://localhost:8000
+```
 
 ## 仓库地址
 

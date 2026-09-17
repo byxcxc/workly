@@ -297,4 +297,6 @@
     <string name="about_source">源代码</string>
     <string name="about_github_hint">在 GitHub 上打开项目</string>
     <string name="about_version">版本 %1$s</string>
+    <string name="about_website">官方网站</string>
+    <string name="about_website_hint">打开项目主页</string>
 </resources>

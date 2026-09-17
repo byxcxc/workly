@@ -86,6 +86,27 @@ fun AboutScreen(
 
             // Where to find the project: tapping opens it in a browser.
             Spacer(Modifier.height(24.dp))
+            SectionLabel(stringResource(R.string.about_website))
+            Spacer(Modifier.height(8.dp))
+            WorklyCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { context.openUrl(WEBSITE_URL) },
+            ) {
+                Text(
+                    text = WEBSITE_URL,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = stringResource(R.string.about_website_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
             SectionLabel(stringResource(R.string.about_source))
             Spacer(Modifier.height(8.dp))
             WorklyCard(
@@ -112,6 +133,9 @@ fun AboutScreen(
 
 /** The public repository, shown in About and linked from the README. */
 const val GITHUB_URL = "https://github.com/byxcxc/workly"
+
+/** The project page published from this repository's docs/ folder. */
+const val WEBSITE_URL = "https://byxcxc.github.io/workly/"
 
 /** Opens [url] in whatever app handles web links. */
 private fun Context.openUrl(url: String) {
