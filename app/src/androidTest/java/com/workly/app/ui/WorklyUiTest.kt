@@ -189,9 +189,13 @@ class WorklyUiTest {
         rule.onNodeWithText(text(R.string.day_override_rest)).performClick()
         clickText(text(R.string.action_save))
 
+        // The write happens in a coroutine, so wait for it rather than guessing.
+        rule.waitUntil(10_000L) {
+            runBlocking { AppGraph.settingsRepository.settings.first() }
+                .dayOverrides
+                .containsKey(today)
+        }
         val stored = runBlocking { AppGraph.settingsRepository.settings.first() }.dayOverrides[today]
-        // The weekly pattern for today is untouched, so the override follows it
-        // unless the day was already a rest day.
         assertNotNull(stored)
     }
 
