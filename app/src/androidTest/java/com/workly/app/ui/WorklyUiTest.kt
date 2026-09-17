@@ -173,7 +173,7 @@ class WorklyUiTest {
     fun longPressingACalendarDayOpensTheDayEditor() {
         openTab(Routes.RECORDS)
         awaitText(text(R.string.records_empty_title))
-        clickText(text(R.string.records_view_calendar), scroll = true)
+        clickText(text(R.string.records_view_calendar))
 
         // Today's cell is found by its accessibility label, which is the date.
         val today = LocalDate.now()

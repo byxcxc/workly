@@ -111,15 +111,9 @@ fun RecordsScreen(
 
         if (state.isLoading) {
             Spacer(Modifier.height(40.dp))
-        } else if (state.totalCount == 0) {
-            EmptyState(
-                title = stringResource(R.string.records_empty_title),
-                message = stringResource(R.string.records_empty_message),
-                icon = CalendarIcon,
-                actionLabel = stringResource(R.string.records_add),
-                onAction = onAddRecord,
-            )
         } else {
+            // The switcher stays visible even with nothing recorded yet: the
+            // calendar is how rest days and per-day hours get planned.
             ViewModeSelector(
                 mode = state.viewMode,
                 onSelect = viewModel::setViewMode,
@@ -127,7 +121,18 @@ fun RecordsScreen(
             )
             Spacer(Modifier.height(8.dp))
             when (state.viewMode) {
-                RecordsViewMode.LIST -> RecordsList(state = state, onOpenRecord = onOpenRecord)
+                RecordsViewMode.LIST -> if (state.totalCount == 0) {
+                    EmptyState(
+                        title = stringResource(R.string.records_empty_title),
+                        message = stringResource(R.string.records_empty_message),
+                        icon = CalendarIcon,
+                        actionLabel = stringResource(R.string.records_add),
+                        onAction = onAddRecord,
+                    )
+                } else {
+                    RecordsList(state = state, onOpenRecord = onOpenRecord)
+                }
+
                 RecordsViewMode.CALENDAR -> CalendarPanel(
                     state = state,
                     onPreviousMonth = viewModel::showPreviousMonth,
