@@ -16,14 +16,23 @@ object Routes {
     const val WORK_TYPES = "settings/work-types"
     const val ABOUT = "settings/about"
 
-    const val ADD_RECORD = "record/new"
+    /**
+     * Adding a record. The date is optional: the calendar passes one when the
+     * user long-presses a day, everything else just opens "today".
+     */
+    const val ADD_RECORD = "record/new?date={date}"
     const val SESSION_DETAIL = "record/detail/{sessionId}"
     const val SESSION_EDIT = "record/edit/{sessionId}"
     const val SESSION_FINISH = "session/finish/{sessionId}"
 
     const val ARG_SESSION_ID = "sessionId"
+    const val ARG_DATE = "date"
 
     val bottomBarRoutes = setOf(HOME, RECORDS, STATISTICS, SETTINGS)
+
+    /** Opens the new-record screen on [date]; `null` means today. */
+    fun addRecordOn(date: java.time.LocalDate?): String =
+        if (date == null) "record/new" else "record/new?date=${date.toEpochDay()}"
 
     fun sessionDetail(sessionId: Long) = "record/detail/$sessionId"
 

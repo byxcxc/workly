@@ -1,5 +1,7 @@
 # Workly
 
+**English** | [中文](README.zh-CN.md)
+
 [![Android CI](https://github.com/byxcxc/workly/actions/workflows/android.yml/badge.svg)](https://github.com/byxcxc/workly/actions/workflows/android.yml)
 
 **Personal work hours and earnings tracker.**
@@ -40,11 +42,31 @@ local database on your device and the core app works completely offline.
 
 **Insight, charts that say something**
 
-- Every chart prints each bar's value, and the numbers are dropped only when
-  they would collide
+- Every chart states its numbers: values are drawn on the bars, and every single
+  data point is also listed underneath in a row you can scroll sideways
 - Work schedule: a weekly hours target and the days you do not work. The
   dashboard and statistics show progress against the target, scaled to the
   period you are looking at, and the calendar marks your rest days
+- The **custom range** in Statistics takes its own total-hours figure and updates
+  the projected income as you type
+- Long-press any day in the calendar to **record work for that day** straight
+  away, to force it to be a rest day, or to give it its own hours target. Every
+  choice is remembered
+
+**Make it yours**
+
+- **Background**: the theme default, a solid colour, or your own picture picked
+  from the gallery
+- **Gaussian blur** on the picture, adjustable from 0% to 100%
+- **Glass surfaces**: with a custom background every card becomes slightly
+  translucent, so the blurred picture shows through
+- **Match the picture**: the buttons and charts take their colour from the
+  picture's dominant colour
+
+> **Note:** the Gaussian blur uses the platform's render effect, which Android
+> exposes from Android 12 (API 31). On older devices the picture is still shown,
+> just without the blur, and everything else works the same.
+
 
 **Configuration**
 
@@ -91,7 +113,7 @@ in Android Studio and use the preview pane to render and export them into
 | Records | List view grouped by day |
 | Calendar | Month grid, work markers, selected-day totals |
 | Statistics | Totals, averages and trend charts |
-| Settings | Rate, currency, work types, theme, backup |
+| Settings | Rate, currency, work types, theme, background, backup |
 
 ---
 
@@ -160,6 +182,7 @@ app/src/main/java/com/workly/app/
 │   └── repository/           # WorkRepository, WorkTypeRepository
 ├── domain/                   # Money, WorkTime, SessionValidator, stats, ranges
 └── ui/
+    ├── background/           # picture decoding, accent extraction, backdrop
     ├── components/           # cards, rows, empty state, dialogs, icons
     ├── home/                 # dashboard + live timer
     ├── navigation/           # routes and NavHost
@@ -172,7 +195,8 @@ app/src/main/java/com/workly/app/
 ```
 
 `app/src/main/res/values/` holds the English strings, `values-ja/` the Japanese
-ones. Nothing user-visible is hard-coded in Kotlin.
+ones and `values-zh/` the Simplified Chinese ones. Nothing user-visible is
+hard-coded in Kotlin.
 
 ---
 
@@ -232,7 +256,7 @@ commented template at the bottom of `.github/workflows/android.yml`.
 ./gradlew connectedDebugAndroidTest # instrumented tests (device or emulator)
 ```
 
-The JVM suite is 85 tests and the instrumented suite is 38 tests, and both are
+The JVM suite is 90 tests and the instrumented suite is 40 tests, and both are
 green in CI.
 
 **JVM unit tests** (`app/src/test/`) cover the rules that are easy to get wrong:
@@ -243,6 +267,7 @@ green in CI.
 - validation: identical start/end, break longer than the work, negative rate
 - daily / weekly / monthly / yearly aggregation, work days and averages
 - the work schedule: planned work days, rest days, period targets and progress
+- per-day overrides: forcing a rest day, forcing a working day, a day's own hours
 - decimal-hour formatting (`6.5`, `8`, `7.33`)
 - week ranges for a configurable first day of the week
 - month calendar grid shape and padding
@@ -256,8 +281,8 @@ and the real UI on an emulator:
 - repository rules: start, finish, discard, edit, delete, import de-duplication
 - CSV/JSON export and JSON import round trips
 - Compose flows: start work, finish work, add, edit, delete, manual entry from
-  the dashboard, the language picker, bottom navigation, and restoring a running
-  session after leaving the dashboard
+  the dashboard, the language picker, long-pressing a calendar day, bottom
+  navigation, and restoring a running session after leaving the dashboard
 
 The instrumented tests need a device because Room requires the Android SQLite
 implementation.
@@ -287,6 +312,10 @@ the repository.
 - [ ] Optional encrypted cloud sync — still no account required for the core app
 
 ---
+
+## Repository
+
+<https://github.com/byxcxc/workly>
 
 ## License
 

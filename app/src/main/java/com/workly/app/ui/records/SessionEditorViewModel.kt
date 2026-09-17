@@ -75,6 +75,8 @@ class SessionEditorViewModel(
     private val settingsRepository: SettingsRepository,
     private val mode: SessionEditorMode,
     private val sessionId: Long?,
+    /** Date the new record should start on; `null` means today. */
+    private val initialDate: LocalDate? = null,
     private val now: () -> Instant = { Instant.now() },
 ) : ViewModel() {
 
@@ -111,7 +113,8 @@ class SessionEditorViewModel(
             val rate = defaultType?.defaultHourlyRateMinor?.takeIf { it > 0L }
                 ?: settings.defaultHourlyRateMinor
             draft.value = EditorDraft(
-                startDate = LocalDate.now(zone),
+                // The calendar passes the day the user long-pressed.
+                startDate = initialDate ?: LocalDate.now(zone),
                 startTime = now.minusHours(1),
                 endTime = now,
                 breakText = "0",
@@ -357,17 +360,21 @@ class SessionEditorViewModel(
         private const val STOP_TIMEOUT_MS = 5_000L
         const val NOTE_MAX_LENGTH = 500
 
-        fun factory(mode: SessionEditorMode, sessionId: Long?): ViewModelProvider.Factory =
-            viewModelFactory {
-                initializer {
-                    SessionEditorViewModel(
-                        workRepository = AppGraph.workRepository,
-                        workTypeRepository = AppGraph.workTypeRepository,
-                        settingsRepository = AppGraph.settingsRepository,
-                        mode = mode,
-                        sessionId = sessionId,
-                    )
-                }
+        fun factory(
+            mode: SessionEditorMode,
+            sessionId: Long?,
+            initialDate: LocalDate? = null,
+        ): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                SessionEditorViewModel(
+                    workRepository = AppGraph.workRepository,
+                    workTypeRepository = AppGraph.workTypeRepository,
+                    settingsRepository = AppGraph.settingsRepository,
+                    mode = mode,
+                    sessionId = sessionId,
+                    initialDate = initialDate,
+                )
             }
+        }
     }
 }

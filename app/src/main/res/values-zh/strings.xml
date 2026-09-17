@@ -279,4 +279,22 @@
     <string name="stats_custom_rate_hint">按 %1$s 计算</string>
     <string name="stats_custom_need_rate">请先在设置中设置时薪以估算收入。</string>
     <string name="duration_unit_hours">小时</string>
+    <string name="settings_section_background">背景</string>
+    <string name="settings_background">背景</string>
+    <string name="background_default">主题默认</string>
+    <string name="background_color">纯色</string>
+    <string name="background_image">我的图片</string>
+    <string name="background_pick">选择图片</string>
+    <string name="background_pick_hint">图片只保存在本机。</string>
+    <string name="background_none">未选择图片</string>
+    <string name="background_blur">模糊程度</string>
+    <string name="background_blur_value">%1$d%%</string>
+    <string name="background_adapt">适配图片配色</string>
+    <string name="background_adapt_hint">用图片主色调为按钮和图表着色。</string>
+    <string name="background_color_title">背景颜色</string>
+    <string name="day_override_add_work">记录当天工时</string>
+    <string name="day_override_saved">已保存当天设置</string>
+    <string name="about_source">源代码</string>
+    <string name="about_github_hint">在 GitHub 上打开项目</string>
+    <string name="about_version">版本 %1$s</string>
 </resources>

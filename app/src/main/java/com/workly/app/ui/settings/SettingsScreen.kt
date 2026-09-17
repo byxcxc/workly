@@ -3,6 +3,7 @@ package com.workly.app.ui.settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -53,6 +56,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.workly.app.BuildConfig
 import com.workly.app.R
 import com.workly.app.data.prefs.AppLanguage
+import com.workly.app.data.prefs.BackgroundMode
 import com.workly.app.data.prefs.DurationStyle
 import com.workly.app.data.prefs.SUPPORTED_CURRENCIES
 import com.workly.app.data.prefs.ThemePalette
@@ -74,6 +78,7 @@ import com.workly.app.ui.util.rememberAppLocale
 import com.workly.app.ui.util.message
 import com.workly.app.ui.util.messageRes
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 import androidx.compose.foundation.shape.CircleShape
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -107,6 +112,8 @@ fun SettingsScreen(
     var showDurationDialog by remember { mutableStateOf(false) }
     var showWeeklyTargetDialog by remember { mutableStateOf(false) }
     var showRestDaysDialog by remember { mutableStateOf(false) }
+    var showBackgroundDialog by remember { mutableStateOf(false) }
+    var showBackgroundColorDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     val today = remember { LocalDate.now().toString() }
@@ -119,6 +126,9 @@ fun SettingsScreen(
     val importLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument(),
     ) { uri -> uri?.let(viewModel::onImportPicked) }
+    val pickBackgroundLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri -> uri?.let(viewModel::setBackgroundImage) }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collect { event ->
@@ -262,6 +272,56 @@ fun SettingsScreen(
         }
 
         SectionLabel(
+            text = stringResource(R.string.settings_section_background),
+            modifier = Modifier.padding(start = 20.dp, top = 24.dp, bottom = 6.dp),
+        )
+        SettingsCard {
+            SettingRow(
+                title = stringResource(R.string.settings_background),
+                value = backgroundModeLabel(state.settings.backgroundMode),
+                onClick = { showBackgroundDialog = true },
+            )
+            if (state.settings.backgroundMode == BackgroundMode.COLOR) {
+                SettingsRowDivider()
+                SettingRow(
+                    title = stringResource(R.string.background_color),
+                    leadingSwatch = Color(state.settings.backgroundColorArgb),
+                    onClick = { showBackgroundColorDialog = true },
+                )
+            }
+            if (state.settings.backgroundMode == BackgroundMode.IMAGE) {
+                SettingsRowDivider()
+                SettingRow(
+                    title = stringResource(R.string.background_pick),
+                    value = if (state.settings.backgroundImageUri == null) {
+                        stringResource(R.string.background_none)
+                    } else {
+                        null
+                    },
+                    supporting = stringResource(R.string.background_pick_hint),
+                    onClick = { pickBackgroundLauncher.launch(arrayOf("image/*")) },
+                )
+                SettingsRowDivider()
+                SliderRow(
+                    title = stringResource(R.string.background_blur),
+                    value = state.settings.backgroundBlurPercent,
+                    valueLabel = stringResource(
+                        R.string.background_blur_value,
+                        state.settings.backgroundBlurPercent,
+                    ),
+                    onChange = viewModel::setBackgroundBlurPercent,
+                )
+                SettingsRowDivider()
+                SwitchRow(
+                    title = stringResource(R.string.background_adapt),
+                    supporting = stringResource(R.string.background_adapt_hint),
+                    checked = state.settings.adaptToImage,
+                    onChange = viewModel::setAdaptToImage,
+                )
+            }
+        }
+
+        SectionLabel(
             text = stringResource(R.string.settings_section_data),
             modifier = Modifier.padding(start = 20.dp, top = 24.dp, bottom = 6.dp),
         )
@@ -350,6 +410,28 @@ fun SettingsScreen(
                 showThemeDialog = false
                 viewModel.setThemeMode(mode)
             },
+        )
+    }
+
+    if (showBackgroundDialog) {
+        ChoiceDialog(
+            title = stringResource(R.string.settings_background),
+            options = BackgroundMode.entries,
+            selected = state.settings.backgroundMode,
+            labelOf = { mode -> backgroundModeLabel(mode) },
+            onDismiss = { showBackgroundDialog = false },
+            onSelect = { mode ->
+                showBackgroundDialog = false
+                viewModel.setBackgroundMode(mode)
+            },
+        )
+    }
+
+    if (showBackgroundColorDialog) {
+        BackgroundColorDialog(
+            selected = state.settings.backgroundColorArgb,
+            onSelect = { argb -> viewModel.setBackgroundColor(argb) },
+            onDismiss = { showBackgroundColorDialog = false },
         )
     }
 
@@ -826,3 +908,123 @@ private fun WeeklyTargetDialog(
         },
     )
 }
+
+
+@Composable
+private fun backgroundModeLabel(mode: BackgroundMode): String = stringResource(
+    when (mode) {
+        BackgroundMode.DEFAULT -> R.string.background_default
+        BackgroundMode.COLOR -> R.string.background_color
+        BackgroundMode.IMAGE -> R.string.background_image
+    },
+)
+
+/** A settings row whose control is a slider, e.g. the background blur. */
+@Composable
+private fun SliderRow(
+    title: String,
+    value: Int,
+    valueLabel: String,
+    onChange: (Int) -> Unit,
+) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                text = valueLabel,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Slider(
+            value = value.toFloat(),
+            onValueChange = { onChange(it.roundToInt()) },
+            valueRange = 0f..100f,
+        )
+    }
+}
+
+/** A settings row whose control is a switch. */
+@Composable
+private fun SwitchRow(
+    title: String,
+    supporting: String,
+    checked: Boolean,
+    onChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .toggleable(value = checked, role = Role.Switch, onValueChange = onChange)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = title, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = supporting,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Spacer(Modifier.size(12.dp))
+        Switch(checked = checked, onCheckedChange = null)
+    }
+}
+
+/**
+ * A grid of ready-made background colours, from dark to light so both themes
+ * have something sensible to pick from.
+ */
+@Composable
+private fun BackgroundColorDialog(
+    selected: Long,
+    onSelect: (Long) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.background_color_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                BACKGROUND_COLORS.chunked(6).forEach { row ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        row.forEach { argb ->
+                            val isSelected = argb == selected
+                            Box(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(argb))
+                                    .border(
+                                        width = if (isSelected) 2.dp else 1.dp,
+                                        color = if (isSelected) {
+                                            MaterialTheme.colorScheme.primary
+                                        } else {
+                                            MaterialTheme.colorScheme.outlineVariant
+                                        },
+                                        shape = CircleShape,
+                                    )
+                                    .clickable { onSelect(argb) },
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) }
+        },
+    )
+}
+
+/** Dark, mid and light options so the choice works in either theme. */
+private val BACKGROUND_COLORS = listOf(
+    0xFF101216, 0xFF1B2430, 0xFF22303A, 0xFF2B2438, 0xFF33272C, 0xFF20302C,
+    0xFF7C8AA5, 0xFF6E8F8A, 0xFF91807C, 0xFF7A7FA0, 0xFF8A7B92, 0xFF6F8A6B,
+    0xFFE9EDF5, 0xFFDDE6F2, 0xFFD9EAEA, 0xFFE2F0E4, 0xFFF6E7D8, 0xFFF3E0E8,
+)

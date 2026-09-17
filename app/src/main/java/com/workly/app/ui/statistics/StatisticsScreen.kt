@@ -416,8 +416,17 @@ private fun TrendCard(
                 labels = labels,
                 barColor = barColor,
                 contentDescription = "$title, $totalLabel",
-                // `map` is inline, so the composable label lambda can be used here.
+                // `map`/`mapIndexed` are inline, so the composable label lambda can
+                // be used directly here.
                 valueLabels = values.map { valueLabel(it) },
+                detailLabels = buckets.mapIndexed { index, bucket ->
+                    val date = if (mode == BucketMode.MONTH) {
+                        formatMonthShort(bucket.labelDate)
+                    } else {
+                        formatDateShort(bucket.labelDate)
+                    }
+                    "$date · ${valueLabel(values[index])}"
+                },
             )
         }
     }

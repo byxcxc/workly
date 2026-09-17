@@ -84,7 +84,8 @@ import java.time.YearMonth
 @Composable
 fun RecordsScreen(
     onOpenRecord: (Long) -> Unit,
-    onAddRecord: () -> Unit,
+    /** `null` means "today"; the calendar passes the day that was long-pressed. */
+    onAddRecord: (LocalDate?) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RecordsViewModel = viewModel(factory = RecordsViewModel.Factory),
 ) {
@@ -100,7 +101,7 @@ fun RecordsScreen(
                 null
             },
             actions = {
-                IconButton(onClick = onAddRecord) {
+                IconButton(onClick = { onAddRecord(null) }) {
                     Icon(
                         imageVector = AddIcon,
                         contentDescription = stringResource(R.string.records_add),
@@ -127,7 +128,7 @@ fun RecordsScreen(
                         message = stringResource(R.string.records_empty_message),
                         icon = CalendarIcon,
                         actionLabel = stringResource(R.string.records_add),
-                        onAction = onAddRecord,
+                        onAction = { onAddRecord(null) },
                     )
                 } else {
                     RecordsList(state = state, onOpenRecord = onOpenRecord)
@@ -135,6 +136,7 @@ fun RecordsScreen(
 
                 RecordsViewMode.CALENDAR -> CalendarPanel(
                     state = state,
+                    onAddRecord = onAddRecord,
                     onPreviousMonth = viewModel::showPreviousMonth,
                     onNextMonth = viewModel::showNextMonth,
                     onSelectDate = viewModel::selectDate,
@@ -158,6 +160,11 @@ fun RecordsScreen(
                 viewModel.setDayOverride(date, DayOverride())
                 overrideDate = null
             },
+            onAddRecord = {
+                viewModel.selectDate(date)
+                overrideDate = null
+                onAddRecord(date)
+            },
             onDismiss = { overrideDate = null },
         )
     }
@@ -171,6 +178,7 @@ private fun DayOverrideDialog(
     weekdayIsRest: Boolean,
     onSave: (DayOverride) -> Unit,
     onClear: () -> Unit,
+    onAddRecord: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     // The switch starts at the day's effective value, so the user only changes
@@ -187,6 +195,12 @@ private fun DayOverrideDialog(
         title = { Text(stringResource(R.string.day_override_title, formatDateMedium(date))) },
         text = {
             Column {
+                // Straight into recording work for this day: the editor opens with
+                // the date already filled in.
+                TextButton(onClick = onAddRecord) {
+                    Text(stringResource(R.string.day_override_add_work))
+                }
+                Spacer(Modifier.height(4.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -207,7 +221,15 @@ private fun DayOverrideDialog(
                     value = hoursText,
                     onValueChange = { hoursText = it },
                     label = { Text(stringResource(R.string.day_override_hours)) },
-                    supportingText = { Text(stringResource(R.string.day_override_hint)) },
+                    supportingText = {
+                        Text(
+                            if (existing?.isDefault == false) {
+                                stringResource(R.string.day_override_saved)
+                            } else {
+                                stringResource(R.string.day_override_hint)
+                            },
+                        )
+                    },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = Modifier.fillMaxWidth(),
@@ -336,6 +358,7 @@ private fun DateHeader(
 @Composable
 private fun CalendarPanel(
     state: RecordsUiState,
+    onAddRecord: (LocalDate?) -> Unit,
     onPreviousMonth: () -> Unit,
     onNextMonth: () -> Unit,
     onSelectDate: (LocalDate) -> Unit,

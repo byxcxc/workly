@@ -41,6 +41,24 @@ enum class ThemePalette {
     }
 }
 
+/** What the app draws behind the UI. */
+enum class BackgroundMode {
+    /** The theme's own background colour. */
+    DEFAULT,
+
+    /** A solid colour the user picked. */
+    COLOR,
+
+    /** The user's own picture, optionally blurred. */
+    IMAGE,
+    ;
+
+    companion object {
+        fun fromKey(key: String?): BackgroundMode =
+            entries.firstOrNull { it.name.equals(key, ignoreCase = true) } ?: DEFAULT
+    }
+}
+
 /** How durations are written: `6h 30m` or `6.5h`. */
 enum class DurationStyle {
     HOURS_MINUTES,
@@ -102,6 +120,17 @@ data class AppSettings(
     val weeklyTargetMinutes: Long = 0L,
     /** Per-day overrides set by long-pressing a date in the calendar. */
     val dayOverrides: Map<LocalDate, DayOverride> = emptyMap(),
+
+    // ---- appearance / background ----
+    val backgroundMode: BackgroundMode = BackgroundMode.DEFAULT,
+    /** ARGB of the solid background colour, only used in [BackgroundMode.COLOR]. */
+    val backgroundColorArgb: Long = DEFAULT_BACKGROUND_COLOR_ARGB,
+    /** Persisted content URI of the user's picture, only used in [BackgroundMode.IMAGE]. */
+    val backgroundImageUri: String? = null,
+    /** 0..100, how strongly the background picture is blurred. */
+    val backgroundBlurPercent: Int = 25,
+    /** When true the theme takes its accent from the picture's dominant colour. */
+    val adaptToImage: Boolean = true,
     val defaultWorkTypeId: Long? = null,
     val language: AppLanguage = AppLanguage.SYSTEM,
     /** True once the four starter work types have been created. */
@@ -114,6 +143,9 @@ data class AppSettings(
 
 /** Saturday and Sunday: a neutral starting point that the user can change. */
 val DEFAULT_REST_DAYS: Set<DayOfWeek> = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
+
+/** A calm blue-grey used as the solid background until the user picks their own. */
+const val DEFAULT_BACKGROUND_COLOR_ARGB: Long = 0xFFE9EDF5
 
 /** Currency of the device locale, falling back to USD. */
 fun defaultCurrencyCode(): String =

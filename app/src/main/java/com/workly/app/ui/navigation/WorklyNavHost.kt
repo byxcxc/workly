@@ -16,6 +16,7 @@ import com.workly.app.ui.settings.AboutScreen
 import com.workly.app.ui.settings.SettingsScreen
 import com.workly.app.ui.settings.WorkTypesScreen
 import com.workly.app.ui.statistics.StatisticsScreen
+import java.time.LocalDate
 
 /**
  * The navigation graph.
@@ -38,14 +39,14 @@ fun WorklyNavHost(
                 onOpenRecord = { id -> navController.navigate(Routes.sessionDetail(id)) },
                 onFinishWork = { id -> navController.navigate(Routes.sessionFinish(id)) },
                 onSeeAllRecords = { navController.navigateToTab(Routes.RECORDS) },
-                onAddRecord = { navController.navigate(Routes.ADD_RECORD) },
+                onAddRecord = { navController.navigate(Routes.addRecordOn(null)) },
             )
         }
 
         composable(Routes.RECORDS) {
             RecordsScreen(
                 onOpenRecord = { id -> navController.navigate(Routes.sessionDetail(id)) },
-                onAddRecord = { navController.navigate(Routes.ADD_RECORD) },
+                onAddRecord = { date -> navController.navigate(Routes.addRecordOn(date)) },
             )
         }
 
@@ -68,10 +69,20 @@ fun WorklyNavHost(
             AboutScreen(onBack = { navController.popBackStack() })
         }
 
-        composable(Routes.ADD_RECORD) {
+        composable(
+            route = Routes.ADD_RECORD,
+            arguments = listOf(
+                navArgument(Routes.ARG_DATE) {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
+            ),
+        ) { entry ->
+            val epochDay = entry.arguments?.getLong(Routes.ARG_DATE) ?: -1L
             SessionEditorScreen(
                 mode = SessionEditorMode.CREATE,
                 sessionId = null,
+                initialDate = if (epochDay >= 0) LocalDate.ofEpochDay(epochDay) else null,
                 onBack = { navController.popBackStack() },
                 onSaved = { navController.popBackStack() },
             )

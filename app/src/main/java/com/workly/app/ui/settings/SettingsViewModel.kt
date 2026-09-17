@@ -2,6 +2,7 @@ package com.workly.app.ui.settings
 
 import androidx.compose.runtime.Immutable
 import android.content.ContentResolver
+import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,7 @@ import com.workly.app.data.backup.ImportPreview
 import com.workly.app.data.backup.WorklyBackup
 import com.workly.app.data.prefs.AppLanguage
 import com.workly.app.data.prefs.AppSettings
+import com.workly.app.data.prefs.BackgroundMode
 import com.workly.app.data.prefs.DurationStyle
 import com.workly.app.data.prefs.ThemePalette
 import com.workly.app.data.prefs.SettingsRepository
@@ -108,6 +110,43 @@ class SettingsViewModel(
 
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch { settingsRepository.setThemeMode(mode) }
+    }
+
+    // ------------------------------------------------------------ background
+
+    fun setBackgroundMode(mode: BackgroundMode) {
+        viewModelScope.launch { settingsRepository.setBackgroundMode(mode) }
+    }
+
+    fun setBackgroundColor(argb: Long) {
+        viewModelScope.launch { settingsRepository.setBackgroundColor(argb) }
+    }
+
+    /**
+     * Remembers the picked picture.
+     *
+     * The read permission is persisted with the URI, otherwise the background
+     * would disappear after the next reboot.
+     */
+    fun setBackgroundImage(uri: Uri) {
+        viewModelScope.launch {
+            runCatching {
+                contentResolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION,
+                )
+            }
+            settingsRepository.setBackgroundImageUri(uri.toString())
+            settingsRepository.setBackgroundMode(BackgroundMode.IMAGE)
+        }
+    }
+
+    fun setBackgroundBlurPercent(percent: Int) {
+        viewModelScope.launch { settingsRepository.setBackgroundBlurPercent(percent) }
+    }
+
+    fun setAdaptToImage(adapt: Boolean) {
+        viewModelScope.launch { settingsRepository.setAdaptToImage(adapt) }
     }
 
     fun setThemePalette(palette: ThemePalette) {

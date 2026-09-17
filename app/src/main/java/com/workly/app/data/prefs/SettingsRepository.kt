@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -50,6 +51,11 @@ class SettingsRepository(private val context: Context) {
                     ?: DEFAULT_REST_DAYS,
                 weeklyTargetMinutes = preferences[Keys.WEEKLY_TARGET_MINUTES] ?: 0L,
                 dayOverrides = decodeOverrides(preferences[Keys.DAY_OVERRIDES]),
+                backgroundMode = BackgroundMode.fromKey(preferences[Keys.BACKGROUND_MODE]),
+                backgroundColorArgb = preferences[Keys.BACKGROUND_COLOR] ?: DEFAULT_BACKGROUND_COLOR_ARGB,
+                backgroundImageUri = preferences[Keys.BACKGROUND_IMAGE_URI],
+                backgroundBlurPercent = (preferences[Keys.BACKGROUND_BLUR] ?: 25).coerceIn(0, 100),
+                adaptToImage = preferences[Keys.ADAPT_TO_IMAGE] ?: true,
                 firstDayOfWeek = runCatching {
                     DayOfWeek.valueOf(preferences[Keys.FIRST_DAY_OF_WEEK] ?: DayOfWeek.MONDAY.name)
                 }.getOrDefault(DayOfWeek.MONDAY),
@@ -79,6 +85,22 @@ class SettingsRepository(private val context: Context) {
         edit { it[Keys.WEEKLY_TARGET_MINUTES] = minutes.coerceAtLeast(0L) }
 
     /** Stores an override for one day, removing it when it becomes the default. */
+    suspend fun setBackgroundMode(mode: BackgroundMode) =
+        edit { it[Keys.BACKGROUND_MODE] = mode.name }
+
+    suspend fun setBackgroundColor(argb: Long) =
+        edit { it[Keys.BACKGROUND_COLOR] = argb }
+
+    suspend fun setBackgroundImageUri(uri: String?) = edit { preferences ->
+        if (uri == null) preferences.remove(Keys.BACKGROUND_IMAGE_URI) else preferences[Keys.BACKGROUND_IMAGE_URI] = uri
+    }
+
+    suspend fun setBackgroundBlurPercent(percent: Int) =
+        edit { it[Keys.BACKGROUND_BLUR] = percent.coerceIn(0, 100) }
+
+    suspend fun setAdaptToImage(adapt: Boolean) =
+        edit { it[Keys.ADAPT_TO_IMAGE] = adapt }
+
     suspend fun setDayOverride(date: LocalDate, override: DayOverride) {
         edit { preferences ->
             val map = decodeOverrides(preferences[Keys.DAY_OVERRIDES]).toMutableMap()
@@ -137,6 +159,11 @@ class SettingsRepository(private val context: Context) {
         val REST_DAYS = stringSetPreferencesKey("rest_days")
         val WEEKLY_TARGET_MINUTES = longPreferencesKey("weekly_target_minutes")
         val DAY_OVERRIDES = stringSetPreferencesKey("day_overrides")
+        val BACKGROUND_MODE = stringPreferencesKey("background_mode")
+        val BACKGROUND_COLOR = longPreferencesKey("background_color")
+        val BACKGROUND_IMAGE_URI = stringPreferencesKey("background_image_uri")
+        val BACKGROUND_BLUR = intPreferencesKey("background_blur")
+        val ADAPT_TO_IMAGE = booleanPreferencesKey("adapt_to_image")
         val FIRST_DAY_OF_WEEK = stringPreferencesKey("first_day_of_week")
         val DEFAULT_WORK_TYPE_ID = longPreferencesKey("default_work_type_id")
         val LANGUAGE = stringPreferencesKey("language")

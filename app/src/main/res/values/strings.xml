@@ -299,4 +299,22 @@
     <string name="stats_custom_rate_hint">Calculated at %1$s</string>
     <string name="stats_custom_need_rate">Set an hourly rate in Settings to project income.</string>
     <string name="duration_unit_hours">h</string>
+    <string name="settings_section_background">BACKGROUND</string>
+    <string name="settings_background">Background</string>
+    <string name="background_default">Theme default</string>
+    <string name="background_color">Solid colour</string>
+    <string name="background_image">My picture</string>
+    <string name="background_pick">Choose a picture</string>
+    <string name="background_pick_hint">The picture stays on this device.</string>
+    <string name="background_none">No picture chosen</string>
+    <string name="background_blur">Blur</string>
+    <string name="background_blur_value">%1$d%%</string>
+    <string name="background_adapt">Match the picture</string>
+    <string name="background_adapt_hint">Tints buttons and charts with the picture\'s dominant colour.</string>
+    <string name="background_color_title">Background colour</string>
+    <string name="day_override_add_work">Record work for this day</string>
+    <string name="day_override_saved">Saved settings for this day</string>
+    <string name="about_source">Source code</string>
+    <string name="about_github_hint">Open the project on GitHub</string>
+    <string name="about_version">Version %1$s</string>
 </resources>

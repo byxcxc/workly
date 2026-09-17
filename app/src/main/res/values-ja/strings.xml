@@ -277,4 +277,22 @@
     <string name="stats_custom_rate_hint">%1$s で計算</string>
     <string name="stats_custom_need_rate">収入を試算するには設定で時給を指定してください。</string>
     <string name="duration_unit_hours">時間</string>
+    <string name="settings_section_background">背景</string>
+    <string name="settings_background">背景</string>
+    <string name="background_default">テーマの既定</string>
+    <string name="background_color">単色</string>
+    <string name="background_image">自分の画像</string>
+    <string name="background_pick">画像を選ぶ</string>
+    <string name="background_pick_hint">画像はこの端末内にのみ保存されます。</string>
+    <string name="background_none">画像が未選択</string>
+    <string name="background_blur">ぼかし</string>
+    <string name="background_blur_value">%1$d%%</string>
+    <string name="background_adapt">画像に合わせる</string>
+    <string name="background_adapt_hint">画像の主要色をボタンやグラフに反映します。</string>
+    <string name="background_color_title">背景色</string>
+    <string name="day_override_add_work">この日の工数を記録</string>
+    <string name="day_override_saved">この日の設定を保存済み</string>
+    <string name="about_source">ソースコード</string>
+    <string name="about_github_hint">GitHub でプロジェクトを開く</string>
+    <string name="about_version">バージョン %1$s</string>
 </resources>

@@ -82,9 +82,10 @@ fun SessionEditorScreen(
     onBack: () -> Unit,
     onSaved: () -> Unit,
     modifier: Modifier = Modifier,
+    initialDate: LocalDate? = null,
     viewModel: SessionEditorViewModel = viewModel(
-        key = "editor-$mode-$sessionId",
-        factory = SessionEditorViewModel.factory(mode, sessionId),
+        key = "editor-$mode-$sessionId-$initialDate",
+        factory = SessionEditorViewModel.factory(mode, sessionId, initialDate),
     ),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

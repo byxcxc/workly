@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.workly.app.data.prefs.AppSettings
+import com.workly.app.data.prefs.BackgroundMode
+import com.workly.app.ui.background.WorklyBackground
+import com.workly.app.ui.background.rememberBackgroundRender
 import com.workly.app.ui.WorklyApp
 import com.workly.app.ui.theme.WorklyTheme
 import com.workly.app.ui.theme.shouldUseDarkTheme
@@ -37,12 +40,23 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            // The picture is decoded (and its accent extracted) once per URI.
+            val background = rememberBackgroundRender(
+                uri = settings.backgroundImageUri
+                    ?.takeIf { settings.backgroundMode == BackgroundMode.IMAGE },
+                resolver = AppGraph.appContext.contentResolver,
+            )
+
             WorklyTheme(
                 themeMode = settings.themeMode,
                 palette = settings.themePalette,
                 durationStyle = settings.durationStyle,
+                backgroundMode = settings.backgroundMode,
+                adaptiveColorArgb = background.accentArgb.takeIf { settings.adaptToImage },
             ) {
-                WorklyApp()
+                WorklyBackground(settings = settings, render = background) {
+                    WorklyApp()
+                }
             }
         }
     }
